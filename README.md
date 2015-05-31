@@ -2,10 +2,7 @@ Fast Rename
 ======================
 A rename tool that supports concurrent renaming.
 
-File::Rename is written in Perl, it works fine. however when you need to pass
-complex regular expression, you have to escape the characters, e.g. the slash `/`.
-
-fsrename separate the pattern option, therefore you can specify the pattern without typeing these character escapes.
+fsrename separates the pattern option, therefore you can specify the pattern without typeing these character escapes.
 
 further, this tool supports concurrent renaming (powered by Go's channel and routine)
 
