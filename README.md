@@ -1,5 +1,7 @@
 Fast Rename
 ======================
+A rename tool that supports concurrent renaming.
+
 
 Install
 --------------
