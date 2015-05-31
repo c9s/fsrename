@@ -15,6 +15,8 @@ var dirOnlyPtr = flag.Bool("dironly", false, "directory only")
 var forExtPtr = flag.String("forext", "", "extension name")
 var dryRunPtr = flag.Bool("dryrun", false, "dry run only")
 var numOfWorkersPtr = flag.Int("c", 2, "the number of concurrent rename workers. default = 2")
+var trimPrefixPtr = flag.String("trimprefix", "", "trim prefix")
+var trimSuffixPtr = flag.String("trimsuffix", "", "trim suffix")
 
 type Entry struct {
 	path    string
@@ -71,12 +73,22 @@ func main() {
 	flag.Parse()
 	var pathArgs = flag.Args()
 
+	// Build pattern from prefix/suffix options
+	if *trimPrefixPtr != "" {
+		*matchPatternPtr = "^" + regexp.QuoteMeta(*trimPrefixPtr)
+		*replacementPtr = ""
+	} else if *trimSuffixPtr != "" {
+		*matchPatternPtr = regexp.QuoteMeta(*trimSuffixPtr) + "$"
+		*replacementPtr = ""
+	}
+
 	if *matchPatternPtr == "" {
-		log.Fatalln("match mattern is required. use -match 'pattern'")
+		log.Fatalln("match pattern is required. use -match 'pattern'")
 	}
 	if *replacementPtr == "" {
 		log.Fatalln("replacement is required. use -replace 'replacement'")
 	}
+
 	var matchRegExp = regexp.MustCompile(*matchPatternPtr)
 
 	var extRegExp *regexp.Regexp = nil

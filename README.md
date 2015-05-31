@@ -17,6 +17,10 @@ Options
 
 - `-match` the pattern that will match the files/dirs you want.
 - `-replace` replace the matched string with what you want.
+
+- `-trimprefix` trim filename prefix. When using this option, you don't have to specify `-match` or `-replace`.
+- `-trimsuffix` trim filename suffix (including extension). When using this option, you don't have to specify `-match` or `-replace`.
+
 - `-dryrun`  dry run, don't rename, just preview the result.
 - `-fileonly` rename only files.
 - `-dironly` rename only directory.
