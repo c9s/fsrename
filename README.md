@@ -1,4 +1,4 @@
-Fast Rename
+FSRename
 ======================
 A rename tool that supports concurrent renaming.
 
