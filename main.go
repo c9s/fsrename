@@ -14,6 +14,7 @@ var fileOnlyPtr = flag.Bool("fileonly", false, "file only")
 var dirOnlyPtr = flag.Bool("dironly", false, "directory only")
 var forExtPtr = flag.String("forext", "", "extension name")
 var dryRunPtr = flag.Bool("dryrun", false, "dry run only")
+var numOfWorkersPtr = flag.Int("c", 2, "the number of concurrent rename workers. default = 2")
 
 type Entry struct {
 	path    string
@@ -83,7 +84,7 @@ func main() {
 		extRegExp = regexp.MustCompile("\\." + *forExtPtr + "$")
 	}
 
-	var numOfWorkers = 3
+	var numOfWorkers = *numOfWorkersPtr
 
 	var workerCv = make(chan bool, numOfWorkers)
 	var printerCv = make(chan bool)
@@ -102,7 +103,7 @@ func main() {
 					entryOutput <- &Entry{path: path, info: info}
 				}
 			} else if *fileOnlyPtr {
-				if !info.Mode().IsRegular() {
+				if !info.IsDir() {
 					entryOutput <- &Entry{path: path, info: info}
 				}
 			} else {
