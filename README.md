@@ -24,6 +24,7 @@ Options
 - `-fileonly` rename only files.
 - `-dironly` rename only directory.
 - `-forext` rename only matched extension.
+- `-c=2` number of workers. (concurrency)
 
 
 Usage
