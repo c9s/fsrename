@@ -12,6 +12,14 @@ Install
     go get -u -x github.com/c9s/fsrename
 
 
+Usage
+---------------------
+
+    fsrename [options] [path...]
+
+When [path...] is not given, "./" will be used as the default path for scanning files.
+
+
 Options
 ---------------
 
@@ -28,10 +36,18 @@ Options
 - `-c=2` number of workers. (concurrency)
 
 
-Usage
+Examples
 ---------------
 
+Replace `_stmt.go` with "_stmt.go" under the current directory:
+
+    fsrename -match "_stmt.go" -replace "_stmt.go"
+
+Replace `_stmt.go` with "_stmt.go" under directory `src/c6`:
+
     fsrename -match "_stmt.go" -replace "_stmt.go" src/c6
+
+Use regular expression without escaping:
 
     fsrename -match "_[a-z]*.go" -replace ".go" src/c6
 

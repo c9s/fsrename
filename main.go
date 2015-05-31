@@ -73,6 +73,10 @@ func main() {
 	flag.Parse()
 	var pathArgs = flag.Args()
 
+	if len(pathArgs) == 0 {
+		pathArgs = []string{"./"}
+	}
+
 	// Build pattern from prefix/suffix options
 	if *trimPrefixPtr != "" {
 		*matchPatternPtr = "^" + regexp.QuoteMeta(*trimPrefixPtr)
