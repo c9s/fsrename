@@ -96,23 +96,30 @@ func main() {
 	}
 	go EntryPrinter(printerCv, renamedEntryOutput)
 
-	for _, path := range pathArgs {
-		var err = filepath.Walk(path, func(path string, info os.FileInfo, err error) error {
-			if *dirOnlyPtr {
-				if info.IsDir() {
-					entryOutput <- &Entry{path: path, info: info}
-				}
-			} else if *fileOnlyPtr {
-				if !info.IsDir() {
-					entryOutput <- &Entry{path: path, info: info}
-				}
-			} else {
-				entryOutput <- &Entry{path: path, info: info}
-			}
-			return err
-		})
+	for _, pathArg := range pathArgs {
+		matches, err := filepath.Glob(pathArg)
 		if err != nil {
 			panic(err)
+		}
+
+		for _, match := range matches {
+			var err = filepath.Walk(match, func(path string, info os.FileInfo, err error) error {
+				if *dirOnlyPtr {
+					if info.IsDir() {
+						entryOutput <- &Entry{path: path, info: info}
+					}
+				} else if *fileOnlyPtr {
+					if !info.IsDir() {
+						entryOutput <- &Entry{path: path, info: info}
+					}
+				} else {
+					entryOutput <- &Entry{path: path, info: info}
+				}
+				return err
+			})
+			if err != nil {
+				panic(err)
+			}
 		}
 	}
 	entryOutput <- nil
