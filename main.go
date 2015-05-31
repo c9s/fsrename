@@ -27,8 +27,6 @@ func EntryPrinter(cv chan bool, input chan *Entry) {
 		fmt.Println(err)
 		os.Exit(1)
 	}
-	// fmt.Println(pwd)
-
 	for {
 		entry, ok := <-input
 		if entry == nil || !ok {
@@ -46,11 +44,17 @@ func EntryPrinter(cv chan bool, input chan *Entry) {
 	cv <- true
 }
 
-func RenameWorker(cv chan bool, input chan *Entry, output chan *Entry, matchRegExp *regexp.Regexp, replacement string) {
+func RenameWorker(cv chan bool, input chan *Entry, output chan *Entry, extRegExp *regexp.Regexp, matchRegExp *regexp.Regexp, replacement string) {
 	for {
 		entry, ok := <-input
 		if entry == nil || !ok {
 			break
+		}
+		if extRegExp != nil && !extRegExp.MatchString(entry.info.Name()) {
+			continue
+		}
+		if !matchRegExp.MatchString(entry.info.Name()) {
+			continue
 		}
 		var newName = matchRegExp.ReplaceAllString(entry.info.Name(), *replacementPtr)
 		entry.newpath = filepath.Join(filepath.Dir(entry.path), newName)
@@ -72,6 +76,11 @@ func main() {
 	}
 	var matchRegExp = regexp.MustCompile(*matchPatternPtr)
 
+	var extRegExp *regexp.Regexp = nil
+	if *forExtPtr != "" {
+		extRegExp = regexp.MustCompile("\\." + *forExtPtr + "$")
+	}
+
 	var numOfWorkers = 3
 
 	var workerCv = make(chan bool, numOfWorkers)
@@ -80,19 +89,25 @@ func main() {
 	var renamedEntryOutput = make(chan *Entry, 1000)
 
 	for i := 0; i < numOfWorkers; i++ {
-		go RenameWorker(workerCv, entryOutput, renamedEntryOutput, matchRegExp, *replacementPtr)
+		go RenameWorker(workerCv, entryOutput, renamedEntryOutput, extRegExp, matchRegExp, *replacementPtr)
 	}
 	go EntryPrinter(printerCv, renamedEntryOutput)
 
 	for _, path := range pathArgs {
 		var err = filepath.Walk(path, func(path string, info os.FileInfo, err error) error {
-			// TODO:
-			// -dironly
-			// -fileonly
-			// -forext
-			if matchRegExp.MatchString(info.Name()) {
+			if *dirOnlyPtr {
+				if info.IsDir() {
+					entryOutput <- &Entry{path: path, info: info}
+				}
+			} else if *fileOnlyPtr {
+				if !info.Mode().IsRegular() {
+					entryOutput <- &Entry{path: path, info: info}
+				}
+			} else {
 				entryOutput <- &Entry{path: path, info: info}
 			}
+			// TODO:
+			// -forext
 			return err
 		})
 		if err != nil {
