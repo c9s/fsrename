@@ -13,7 +13,7 @@ var replacementPtr = flag.String("replace", "", "replacement")
 var fileOnlyPtr = flag.Bool("fileOnly", false, "file only")
 var dirOnlyPtr = flag.Bool("dirOnly", false, "directory only")
 var forExtPtr = flag.String("forExt", "", "extension name")
-var dryPtr = flag.Bool("dry", false, "dry run only")
+var dryRunPtr = flag.Bool("dryRun", false, "dry run only")
 
 type Entry struct {
 	path    string
@@ -44,7 +44,7 @@ func EntryPrinter(cv chan bool, input chan *Entry) {
 	cv <- true
 }
 
-func RenameWorker(cv chan bool, input chan *Entry, output chan *Entry, extRegExp *regexp.Regexp, matchRegExp *regexp.Regexp, replacement string) {
+func RenameWorker(cv chan bool, input chan *Entry, output chan *Entry, extRegExp *regexp.Regexp, matchRegExp *regexp.Regexp, replacement string, dryrun bool) {
 	for {
 		entry, ok := <-input
 		if entry == nil || !ok {
@@ -58,7 +58,9 @@ func RenameWorker(cv chan bool, input chan *Entry, output chan *Entry, extRegExp
 		}
 		var newName = matchRegExp.ReplaceAllString(entry.info.Name(), *replacementPtr)
 		entry.newpath = filepath.Join(filepath.Dir(entry.path), newName)
-		os.Rename(entry.path, entry.newpath)
+		if !dryrun {
+			os.Rename(entry.path, entry.newpath)
+		}
 		output <- entry
 	}
 	cv <- true
@@ -89,7 +91,7 @@ func main() {
 	var renamedEntryOutput = make(chan *Entry, 1000)
 
 	for i := 0; i < numOfWorkers; i++ {
-		go RenameWorker(workerCv, entryOutput, renamedEntryOutput, extRegExp, matchRegExp, *replacementPtr)
+		go RenameWorker(workerCv, entryOutput, renamedEntryOutput, extRegExp, matchRegExp, *replacementPtr, *dryRunPtr)
 	}
 	go EntryPrinter(printerCv, renamedEntryOutput)
 
