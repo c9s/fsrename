@@ -10,8 +10,8 @@ import "strings"
 
 var matchPatternPtr = flag.String("match", ".", "regular expression without slash '/'")
 var replacementPtr = flag.String("replace", "", "replacement")
-var fileOnlyPtr = flag.Bool("fileonly", false, "file only")
-var dirOnlyPtr = flag.Bool("dironly", false, "directory only")
+var fileOnlyPtr = flag.Bool("fileOnly", false, "file only")
+var dirOnlyPtr = flag.Bool("dirOnly", false, "directory only")
 var forExtPtr = flag.String("forExt", "", "extension name")
 var dryPtr = flag.Bool("dry", false, "dry run only")
 
