@@ -108,8 +108,6 @@ func main() {
 			} else {
 				entryOutput <- &Entry{path: path, info: info}
 			}
-			// TODO:
-			// -forext
 			return err
 		})
 		if err != nil {
