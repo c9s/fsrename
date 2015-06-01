@@ -7,6 +7,7 @@ import "log"
 import "path/filepath"
 import "regexp"
 import "strings"
+import "sync"
 
 var matchPatternPtr = flag.String("match", ".", "regular expression without slash '/'")
 var replacementPtr = flag.String("replace", "", "replacement")
@@ -17,6 +18,10 @@ var dryRunPtr = flag.Bool("dryrun", false, "dry run only")
 var numOfWorkersPtr = flag.Int("c", 2, "the number of concurrent rename workers. default = 2")
 var trimPrefixPtr = flag.String("trimprefix", "", "trim prefix")
 var trimSuffixPtr = flag.String("trimsuffix", "", "trim suffix")
+var seqNumber = flag.Bool("seqnumber", false, "sequence number")
+var startNum = flag.Int("startnum", 0, "sequence number start with")
+var sequence_number int = 0
+var m sync.Mutex
 
 type Entry struct {
 	path    string
@@ -47,7 +52,7 @@ func EntryPrinter(cv chan bool, input chan *Entry) {
 	cv <- true
 }
 
-func RenameWorker(cv chan bool, input chan *Entry, output chan *Entry, extRegExp *regexp.Regexp, matchRegExp *regexp.Regexp, replacement string, dryrun bool) {
+func RenameWorker(cv chan bool, input chan *Entry, output chan *Entry, extRegExp *regexp.Regexp, matchRegExp *regexp.Regexp, replacement string, dryrun bool, seqNum bool) {
 	for {
 		entry, ok := <-input
 		if entry == nil || !ok {
@@ -60,6 +65,13 @@ func RenameWorker(cv chan bool, input chan *Entry, output chan *Entry, extRegExp
 			continue
 		}
 		var newName = matchRegExp.ReplaceAllString(entry.info.Name(), *replacementPtr)
+		if seqNum {
+			extAddress := strings.LastIndex(newName, ".")
+			m.Lock()
+			newName = fmt.Sprintf("%s%03d.%s", newName[:extAddress], sequence_number, newName[extAddress+1:])
+			sequence_number = sequence_number + 1
+			m.Unlock()
+		}
 		entry.newpath = filepath.Join(filepath.Dir(entry.path), newName)
 		if !dryrun {
 			os.Rename(entry.path, entry.newpath)
@@ -81,9 +93,11 @@ func main() {
 	if *trimPrefixPtr != "" {
 		*matchPatternPtr = "^" + regexp.QuoteMeta(*trimPrefixPtr)
 		*replacementPtr = ""
+		*seqNumber = false
 	} else if *trimSuffixPtr != "" {
 		*matchPatternPtr = regexp.QuoteMeta(*trimSuffixPtr) + "$"
 		*replacementPtr = ""
+		*seqNumber = false
 	}
 
 	if *matchPatternPtr == "" {
@@ -92,6 +106,8 @@ func main() {
 	if *replacementPtr == "" {
 		log.Fatalln("replacement is required. use -replace 'replacement'")
 	}
+
+	sequence_number = *startNum
 
 	var matchRegExp = regexp.MustCompile(*matchPatternPtr)
 
@@ -108,7 +124,7 @@ func main() {
 	var renamedEntryOutput = make(chan *Entry, 1000)
 
 	for i := 0; i < numOfWorkers; i++ {
-		go RenameWorker(workerCv, entryOutput, renamedEntryOutput, extRegExp, matchRegExp, *replacementPtr, *dryRunPtr)
+		go RenameWorker(workerCv, entryOutput, renamedEntryOutput, extRegExp, matchRegExp, *replacementPtr, *dryRunPtr, *seqNumber)
 	}
 	go EntryPrinter(printerCv, renamedEntryOutput)
 
