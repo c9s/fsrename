@@ -8,9 +8,11 @@ import "path/filepath"
 import "regexp"
 import "strings"
 import "sync"
+import "sort"
 
 var matchPatternPtr = flag.String("match", ".", "regular expression without slash '/'")
 var replacementPtr = flag.String("replace", "", "replacement")
+var replacementFormatPtr = flag.String("replace-format", "", "replacement with format")
 var fileOnlyPtr = flag.Bool("fileonly", false, "file only")
 var dirOnlyPtr = flag.Bool("dironly", false, "directory only")
 var forExtPtr = flag.String("forext", "", "extension name")
@@ -18,7 +20,7 @@ var dryRunPtr = flag.Bool("dryrun", false, "dry run only")
 var numOfWorkersPtr = flag.Int("c", 2, "the number of concurrent rename workers. default = 2")
 var trimPrefixPtr = flag.String("trimprefix", "", "trim prefix")
 var trimSuffixPtr = flag.String("trimsuffix", "", "trim suffix")
-var seqNumber = flag.Bool("seqnumber", false, "sequence number")
+var orderBy = flag.String("orderby", "", "order by")
 var startNum = flag.Int("startnum", 0, "sequence number start with")
 var sequence_number int = 0
 var m sync.Mutex
@@ -52,7 +54,7 @@ func EntryPrinter(cv chan bool, input chan *Entry) {
 	cv <- true
 }
 
-func RenameWorker(cv chan bool, input chan *Entry, output chan *Entry, extRegExp *regexp.Regexp, matchRegExp *regexp.Regexp, replacement string, dryrun bool, seqNum bool) {
+func RenameWorker(cv chan bool, input chan *Entry, output chan *Entry, extRegExp *regexp.Regexp, matchRegExp *regexp.Regexp, replacement string, dryrun bool) {
 	for {
 		entry, ok := <-input
 		if entry == nil || !ok {
@@ -64,18 +66,25 @@ func RenameWorker(cv chan bool, input chan *Entry, output chan *Entry, extRegExp
 		if !matchRegExp.MatchString(entry.info.Name()) {
 			continue
 		}
-		var newName = matchRegExp.ReplaceAllString(entry.info.Name(), *replacementPtr)
-		if seqNum {
-			extAddress := strings.LastIndex(newName, ".")
-			m.Lock()
-			newName = fmt.Sprintf("%s%03d.%s", newName[:extAddress], sequence_number, newName[extAddress+1:])
-			sequence_number = sequence_number + 1
-			m.Unlock()
+		var replaceStr string
+		if *replacementPtr != "" {
+			replaceStr = *replacementPtr
+		} else {
+			replaceStr = *replacementFormatPtr
 		}
+		var newName = matchRegExp.ReplaceAllString(entry.info.Name(), replaceStr)
+		// if seqNum {
+		// 	extAddress := strings.LastIndex(newName, ".")
+		// 	m.Lock()
+		// 	newName = fmt.Sprintf("%s%03d.%s", newName[:extAddress], sequence_number, newName[extAddress+1:])
+		// 	sequence_number = sequence_number + 1
+		// 	m.Unlock()
+		// }
 		entry.newpath = filepath.Join(filepath.Dir(entry.path), newName)
 		if !dryrun {
 			os.Rename(entry.path, entry.newpath)
 		}
+		// fmt.Println("<-Entry newName:", newName)
 		output <- entry
 	}
 	cv <- true
@@ -89,22 +98,27 @@ func main() {
 		pathArgs = []string{"./"}
 	}
 
+	if *replacementFormatPtr != "" {
+		*replacementPtr = ""
+		*fileOnlyPtr = true
+	}
+
 	// Build pattern from prefix/suffix options
 	if *trimPrefixPtr != "" {
 		*matchPatternPtr = "^" + regexp.QuoteMeta(*trimPrefixPtr)
 		*replacementPtr = ""
-		*seqNumber = false
+		*replacementFormatPtr = ""
 	} else if *trimSuffixPtr != "" {
 		*matchPatternPtr = regexp.QuoteMeta(*trimSuffixPtr) + "$"
 		*replacementPtr = ""
-		*seqNumber = false
+		*replacementFormatPtr = ""
 	}
 
 	if *matchPatternPtr == "" {
 		log.Fatalln("match pattern is required. use -match 'pattern'")
 	}
-	if *replacementPtr == "" {
-		log.Fatalln("replacement is required. use -replace 'replacement'")
+	if *replacementPtr == "" && *replacementFormatPtr == "" {
+		log.Fatalln("replacement is required. use -replace 'replacement' or -replace-format 'replacement with format'")
 	}
 
 	sequence_number = *startNum
@@ -120,11 +134,12 @@ func main() {
 
 	var workerCv = make(chan bool, numOfWorkers)
 	var printerCv = make(chan bool)
+	var entryQueue []Entry
 	var entryOutput = make(chan *Entry, 1000)
 	var renamedEntryOutput = make(chan *Entry, 1000)
 
 	for i := 0; i < numOfWorkers; i++ {
-		go RenameWorker(workerCv, entryOutput, renamedEntryOutput, extRegExp, matchRegExp, *replacementPtr, *dryRunPtr, *seqNumber)
+		go RenameWorker(workerCv, entryOutput, renamedEntryOutput, extRegExp, matchRegExp, *replacementPtr, *dryRunPtr)
 	}
 	go EntryPrinter(printerCv, renamedEntryOutput)
 
@@ -138,20 +153,41 @@ func main() {
 			var err = filepath.Walk(match, func(path string, info os.FileInfo, err error) error {
 				if *dirOnlyPtr {
 					if info.IsDir() {
-						entryOutput <- &Entry{path: path, info: info}
+						entryQueue = append(entryQueue, Entry{path: path, info: info})
 					}
 				} else if *fileOnlyPtr {
 					if !info.IsDir() {
-						entryOutput <- &Entry{path: path, info: info}
+						entryQueue = append(entryQueue, Entry{path: path, info: info})
 					}
 				} else {
-					entryOutput <- &Entry{path: path, info: info}
+					log.Println("Entry, ", path)
+					entryQueue = append(entryQueue, Entry{path: path, info: info})
 				}
 				return err
 			})
 			if err != nil {
 				panic(err)
 			}
+		}
+
+		//Sorting.
+		if *fileOnlyPtr {
+			switch *orderBy {
+			case "Reverse":
+				sort.Sort(ReverseSort{entryQueue})
+			case "Mtime":
+				sort.Sort(MtimeSort{entryQueue})
+			case "MtimeReverse":
+				sort.Sort(MtimeReverseSort{entryQueue})
+			case "Size":
+				sort.Sort(SizeSort{entryQueue})
+			case "SizeReverse":
+				sort.Sort(SizeReverseSort{entryQueue})
+			}
+		}
+
+		for _, v := range entryQueue {
+			entryOutput <- &v
 		}
 	}
 	entryOutput <- nil
