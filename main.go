@@ -21,8 +21,7 @@ var numOfWorkersPtr = flag.Int("c", 2, "the number of concurrent rename workers.
 var trimPrefixPtr = flag.String("trimprefix", "", "trim prefix")
 var trimSuffixPtr = flag.String("trimsuffix", "", "trim suffix")
 var orderBy = flag.String("orderby", "", "order by")
-var startNum = flag.Int("startnum", 0, "sequence number start with")
-var sequence_number int = 0
+var sequence_number int = 1
 var m sync.Mutex
 
 type Entry struct {
@@ -54,6 +53,16 @@ func EntryPrinter(cv chan bool, input chan *Entry) {
 	cv <- true
 }
 
+func GenerateFormatName() string {
+	c_format := strings.Replace(*replacementFormatPtr, "%i", "%04d", 1)
+
+	m.Lock()
+	ret_str := fmt.Sprintf(c_format, sequence_number)
+	sequence_number = sequence_number + 1
+	m.Unlock()
+	return ret_str
+}
+
 func RenameWorker(cv chan bool, input chan *Entry, output chan *Entry, extRegExp *regexp.Regexp, matchRegExp *regexp.Regexp, replacement string, dryrun bool) {
 	for {
 		entry, ok := <-input
@@ -66,25 +75,18 @@ func RenameWorker(cv chan bool, input chan *Entry, output chan *Entry, extRegExp
 		if !matchRegExp.MatchString(entry.info.Name()) {
 			continue
 		}
-		var replaceStr string
+		var newName string
 		if *replacementPtr != "" {
-			replaceStr = *replacementPtr
+			newName = matchRegExp.ReplaceAllString(entry.info.Name(), *replacementPtr)
 		} else {
-			replaceStr = *replacementFormatPtr
+			newName = GenerateFormatName()
 		}
-		var newName = matchRegExp.ReplaceAllString(entry.info.Name(), replaceStr)
-		// if seqNum {
-		// 	extAddress := strings.LastIndex(newName, ".")
-		// 	m.Lock()
-		// 	newName = fmt.Sprintf("%s%03d.%s", newName[:extAddress], sequence_number, newName[extAddress+1:])
-		// 	sequence_number = sequence_number + 1
-		// 	m.Unlock()
-		// }
+
 		entry.newpath = filepath.Join(filepath.Dir(entry.path), newName)
 		if !dryrun {
+			fmt.Println("renme:", entry.path, entry.newpath)
 			os.Rename(entry.path, entry.newpath)
 		}
-		// fmt.Println("<-Entry newName:", newName)
 		output <- entry
 	}
 	cv <- true
@@ -120,8 +122,6 @@ func main() {
 	if *replacementPtr == "" && *replacementFormatPtr == "" {
 		log.Fatalln("replacement is required. use -replace 'replacement' or -replace-format 'replacement with format'")
 	}
-
-	sequence_number = *startNum
 
 	var matchRegExp = regexp.MustCompile(*matchPatternPtr)
 
@@ -160,7 +160,6 @@ func main() {
 						entryQueue = append(entryQueue, Entry{path: path, info: info})
 					}
 				} else {
-					log.Println("Entry, ", path)
 					entryQueue = append(entryQueue, Entry{path: path, info: info})
 				}
 				return err
@@ -170,8 +169,8 @@ func main() {
 			}
 		}
 
-		//Sorting.
-		if *fileOnlyPtr {
+		//Sorting only enable on file only. Default sorting is alphabet
+		if *fileOnlyPtr && *orderBy != "" {
 			switch *orderBy {
 			case "Reverse":
 				sort.Sort(ReverseSort{entryQueue})
@@ -186,8 +185,8 @@ func main() {
 			}
 		}
 
-		for _, v := range entryQueue {
-			entryOutput <- &v
+		for index, _ := range entryQueue {
+			entryOutput <- &(entryQueue[index])
 		}
 	}
 	entryOutput <- nil
