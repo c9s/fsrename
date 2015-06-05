@@ -187,11 +187,12 @@ func main() {
 				sort.Sort(SizeReverseSort{entryQueue})
 			}
 		}
-
-		for index, _ := range entryQueue {
-			entryOutput <- &(entryQueue[index])
-		}
 	}
+
+	for index, _ := range entryQueue {
+		entryOutput <- &(entryQueue[index])
+	}
+
 	entryOutput <- nil
 	close(entryOutput)
 
