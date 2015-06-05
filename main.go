@@ -114,6 +114,7 @@ func main() {
 		*replacementPtr = ""
 	} else if *trimSuffixPtr != "" {
 		*matchPatternPtr = regexp.QuoteMeta(*trimSuffixPtr) + "$"
+		*replacementPtr = ""
 	}
 
 	if *matchPatternPtr == "" {
