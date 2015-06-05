@@ -28,6 +28,7 @@ type Entry struct {
 	path    string
 	newpath string
 	info    os.FileInfo
+	result  string
 }
 
 func EntryPrinter(cv chan bool, input chan *Entry) {
@@ -47,7 +48,7 @@ func EntryPrinter(cv chan bool, input chan *Entry) {
 			var newpath = strings.TrimLeft(strings.Replace(entry.path, pwd, "", 1), "/")
 			fmt.Printf("%s => %s", oldpath, newpath)
 		} else {
-			fmt.Printf("%s => %s\n", entry.path, entry.newpath)
+			fmt.Printf("%s => %s  .. %s\n", entry.path, entry.newpath, entry.result)
 		}
 	}
 	cv <- true
@@ -55,7 +56,6 @@ func EntryPrinter(cv chan bool, input chan *Entry) {
 
 func GenerateFormatName() string {
 	c_format := strings.Replace(*replacementFormatPtr, "%i", "%04d", 1)
-
 	m.Lock()
 	ret_str := fmt.Sprintf(c_format, sequence_number)
 	sequence_number = sequence_number + 1
@@ -84,8 +84,13 @@ func RenameWorker(cv chan bool, input chan *Entry, output chan *Entry, extRegExp
 
 		entry.newpath = filepath.Join(filepath.Dir(entry.path), newName)
 		if !dryrun {
-			fmt.Println("renme:", entry.path, entry.newpath)
-			os.Rename(entry.path, entry.newpath)
+			_, err := os.Open(entry.newpath)
+			if os.IsNotExist(err) {
+				os.Rename(entry.path, entry.newpath)
+				entry.result = " success"
+			} else {
+				entry.result = " file exist, ignore"
+			}
 		}
 		output <- entry
 	}
