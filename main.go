@@ -110,19 +110,15 @@ func main() {
 
 	if *replacementFormatPtr != "" {
 		sequenceNumber = *seqStart
-		*replacementPtr = ""
 		*fileOnlyPtr = true
 	}
 
 	// Build pattern from prefix/suffix options
 	if *trimPrefixPtr != "" {
 		*matchPatternPtr = "^" + regexp.QuoteMeta(*trimPrefixPtr)
-		*replacementPtr = ""
 		*replacementFormatPtr = ""
 	} else if *trimSuffixPtr != "" {
 		*matchPatternPtr = regexp.QuoteMeta(*trimSuffixPtr) + "$"
-		*replacementPtr = ""
-		*replacementFormatPtr = ""
 	}
 
 	if *matchPatternPtr == "" {
