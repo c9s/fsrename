@@ -4,38 +4,38 @@ import (
 	"sort"
 )
 
-type Files []Entry
+type Entries []Entry
 
-func (self Files) Len() int           { return len(self) }
-func (self Files) Less(i, j int) bool { return self[i].newpath < self[j].newpath }
-func (self Files) Swap(i, j int)      { self[i], self[j] = self[j], self[i] }
+func (self Entries) Len() int           { return len(self) }
+func (self Entries) Less(i, j int) bool { return self[i].newpath < self[j].newpath }
+func (self Entries) Swap(i, j int)      { self[i], self[j] = self[j], self[i] }
 
-func (files Files) Sort() { sort.Sort(files) }
+func (files Entries) Sort() { sort.Sort(files) }
 
-type ReverseSort struct{ Files }
+type ReverseSort struct{ Entries }
 
-func (self ReverseSort) Less(i, j int) bool { return self.Files[i].newpath > self.Files[j].newpath }
+func (self ReverseSort) Less(i, j int) bool { return self.Entries[i].newpath > self.Entries[j].newpath }
 
-type MtimeSort struct{ Files }
+type MtimeSort struct{ Entries }
 
 func (self MtimeSort) Less(i, j int) bool {
-	return self.Files[i].info.ModTime().UnixNano() < self.Files[j].info.ModTime().UnixNano()
+	return self.Entries[i].info.ModTime().UnixNano() < self.Entries[j].info.ModTime().UnixNano()
 }
 
-type MtimeReverseSort struct{ Files }
+type MtimeReverseSort struct{ Entries }
 
 func (self MtimeReverseSort) Less(i, j int) bool {
-	return self.Files[i].info.ModTime().UnixNano() > self.Files[j].info.ModTime().UnixNano()
+	return self.Entries[i].info.ModTime().UnixNano() > self.Entries[j].info.ModTime().UnixNano()
 }
 
-type SizeSort struct{ Files }
+type SizeSort struct{ Entries }
 
 func (self SizeSort) Less(i, j int) bool {
-	return self.Files[i].info.Size() > self.Files[i].info.Size()
+	return self.Entries[i].info.Size() > self.Entries[i].info.Size()
 }
 
-type SizeReverseSort struct{ Files }
+type SizeReverseSort struct{ Entries }
 
 func (self SizeReverseSort) Less(i, j int) bool {
-	return self.Files[i].info.Size() < self.Files[i].info.Size()
+	return self.Entries[i].info.Size() < self.Entries[i].info.Size()
 }

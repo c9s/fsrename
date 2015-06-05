@@ -85,7 +85,8 @@ func RenameWorker(cv chan bool, input chan *Entry, output chan *Entry, extRegExp
 
 		entry.newpath = filepath.Join(filepath.Dir(entry.path), newName)
 		if !dryrun {
-			_, err := os.Open(entry.newpath)
+			checkFile, err := os.Open(entry.newpath)
+			defer checkFile.Close()
 			if os.IsNotExist(err) {
 				os.Rename(entry.path, entry.newpath)
 				entry.result = " success"
