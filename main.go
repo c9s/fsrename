@@ -11,8 +11,8 @@ import "sync"
 import "sort"
 
 var matchPatternPtr = flag.String("match", ".", "regular expression without slash '/'")
-var replacementPtr = flag.String("replace", "", "replacement")
-var replacementFormatPtr = flag.String("replace-format", "", "replacement with format")
+var replacementPtr = flag.String("replace", "{replacement}", "replacement")
+var replacementFormatPtr = flag.String("replace-format", "{replacement}", "replacement with format")
 var fileOnlyPtr = flag.Bool("fileonly", false, "file only")
 var dirOnlyPtr = flag.Bool("dironly", false, "directory only")
 var forExtPtr = flag.String("forext", "", "extension name")
@@ -76,7 +76,7 @@ func RenameWorker(cv chan bool, input chan *Entry, output chan *Entry, extRegExp
 			continue
 		}
 		var newName string
-		if *replacementPtr != "" {
+		if *replacementPtr != "{replacement}" {
 			newName = matchRegExp.ReplaceAllString(entry.info.Name(), *replacementPtr)
 		} else {
 			currentNumber := GetSeqNumber()
@@ -128,7 +128,7 @@ func main() {
 	if *matchPatternPtr == "" {
 		log.Fatalln("match pattern is required. use -match 'pattern'")
 	}
-	if *replacementPtr == "" && *replacementFormatPtr == "" {
+	if *replacementPtr == "{replacement}" && *replacementFormatPtr == "{replacement}" {
 		log.Fatalln("replacement is required. use -replace 'replacement' or -replace-format 'replacement with format'")
 	}
 
