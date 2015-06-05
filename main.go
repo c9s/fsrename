@@ -21,6 +21,7 @@ var numOfWorkersPtr = flag.Int("c", 2, "the number of concurrent rename workers.
 var trimPrefixPtr = flag.String("trimprefix", "", "trim prefix")
 var trimSuffixPtr = flag.String("trimsuffix", "", "trim suffix")
 var orderBy = flag.String("orderby", "", "order by")
+var seqStart = flag.Int("seqstart", 0, "sequence number start with")
 var sequenceNumber int = 1
 var m sync.Mutex
 
@@ -108,6 +109,7 @@ func main() {
 	}
 
 	if *replacementFormatPtr != "" {
+		sequenceNumber = *seqStart
 		*replacementPtr = ""
 		*fileOnlyPtr = true
 	}
@@ -131,7 +133,6 @@ func main() {
 	}
 
 	var matchRegExp = regexp.MustCompile(*matchPatternPtr)
-
 	var extRegExp *regexp.Regexp = nil
 	if *forExtPtr != "" {
 		extRegExp = regexp.MustCompile("\\." + *forExtPtr + "$")
