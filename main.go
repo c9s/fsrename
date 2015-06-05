@@ -108,21 +108,13 @@ func main() {
 		pathArgs = []string{"./"}
 	}
 
-	if *replacementFormatPtr != "" {
-		sequenceNumber = *seqStart
-		*replacementPtr = ""
-		*fileOnlyPtr = true
-	}
-
 	// Build pattern from prefix/suffix options
 	if *trimPrefixPtr != "" {
 		*matchPatternPtr = "^" + regexp.QuoteMeta(*trimPrefixPtr)
 		*replacementPtr = ""
-		*replacementFormatPtr = ""
 	} else if *trimSuffixPtr != "" {
 		*matchPatternPtr = regexp.QuoteMeta(*trimSuffixPtr) + "$"
 		*replacementPtr = ""
-		*replacementFormatPtr = ""
 	}
 
 	if *matchPatternPtr == "" {
@@ -130,6 +122,10 @@ func main() {
 	}
 	if *replacementPtr == "{replacement}" && *replacementFormatPtr == "{replacement}" {
 		log.Fatalln("replacement is required. use -replace 'replacement' or -replace-format 'replacement with format'")
+	}
+	if *replacementFormatPtr != "{replacement}" {
+		sequenceNumber = *seqStart
+		*fileOnlyPtr = true
 	}
 
 	var matchRegExp = regexp.MustCompile(*matchPatternPtr)
@@ -192,11 +188,12 @@ func main() {
 				sort.Sort(SizeReverseSort{entryQueue})
 			}
 		}
-
-		for index, _ := range entryQueue {
-			entryOutput <- &(entryQueue[index])
-		}
 	}
+
+	for index, _ := range entryQueue {
+		entryOutput <- &(entryQueue[index])
+	}
+
 	entryOutput <- nil
 	close(entryOutput)
 
