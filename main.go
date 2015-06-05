@@ -21,7 +21,7 @@ var numOfWorkersPtr = flag.Int("c", 2, "the number of concurrent rename workers.
 var trimPrefixPtr = flag.String("trimprefix", "", "trim prefix")
 var trimSuffixPtr = flag.String("trimsuffix", "", "trim suffix")
 var orderBy = flag.String("orderby", "", "order by")
-var sequence_number int = 1
+var sequenceNumber int = 1
 var m sync.Mutex
 
 type Entry struct {
@@ -54,13 +54,12 @@ func EntryPrinter(cv chan bool, input chan *Entry) {
 	cv <- true
 }
 
-func GenerateFormatName() string {
-	c_format := strings.Replace(*replacementFormatPtr, "%i", "%04d", 1)
+func GetSeqNumber() (seqNum int) {
 	m.Lock()
-	ret_str := fmt.Sprintf(c_format, sequence_number)
-	sequence_number = sequence_number + 1
+	retValue := sequenceNumber
+	sequenceNumber = sequenceNumber + 1
 	m.Unlock()
-	return ret_str
+	return retValue
 }
 
 func RenameWorker(cv chan bool, input chan *Entry, output chan *Entry, extRegExp *regexp.Regexp, matchRegExp *regexp.Regexp, replacement string, dryrun bool) {
@@ -79,7 +78,9 @@ func RenameWorker(cv chan bool, input chan *Entry, output chan *Entry, extRegExp
 		if *replacementPtr != "" {
 			newName = matchRegExp.ReplaceAllString(entry.info.Name(), *replacementPtr)
 		} else {
-			newName = GenerateFormatName()
+			currentNumber := GetSeqNumber()
+			standardFormatstring := strings.Replace(*replacementFormatPtr, "%i", "%04d", 1)
+			newName = fmt.Sprintf(standardFormatstring, currentNumber)
 		}
 
 		entry.newpath = filepath.Join(filepath.Dir(entry.path), newName)
