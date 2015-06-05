@@ -108,15 +108,10 @@ func main() {
 		pathArgs = []string{"./"}
 	}
 
-	if *replacementFormatPtr != "" {
-		sequenceNumber = *seqStart
-		*fileOnlyPtr = true
-	}
-
 	// Build pattern from prefix/suffix options
 	if *trimPrefixPtr != "" {
 		*matchPatternPtr = "^" + regexp.QuoteMeta(*trimPrefixPtr)
-		*replacementFormatPtr = ""
+		*replacementPtr = ""
 	} else if *trimSuffixPtr != "" {
 		*matchPatternPtr = regexp.QuoteMeta(*trimSuffixPtr) + "$"
 	}
@@ -126,6 +121,10 @@ func main() {
 	}
 	if *replacementPtr == "{replacement}" && *replacementFormatPtr == "{replacement}" {
 		log.Fatalln("replacement is required. use -replace 'replacement' or -replace-format 'replacement with format'")
+	}
+	if *replacementFormatPtr != "{replacement}" {
+		sequenceNumber = *seqStart
+		*fileOnlyPtr = true
 	}
 
 	var matchRegExp = regexp.MustCompile(*matchPatternPtr)
