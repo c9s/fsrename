@@ -52,7 +52,7 @@ func EntryPrinter(cv chan bool, input chan *Entry) {
 			var newpath = strings.TrimLeft(strings.Replace(entry.path, pwd, "", 1), "/")
 			fmt.Printf("%s => %s", oldpath, newpath)
 		} else {
-			fmt.Printf("%s => %s  .. %s\n", entry.path, entry.newpath, entry.result)
+			fmt.Printf("%s => %s -> %s\n", entry.path, entry.newpath, entry.result)
 		}
 	}
 	cv <- true
