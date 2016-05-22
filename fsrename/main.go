@@ -12,6 +12,9 @@ import "sort"
 
 var matchPatternPtr = flag.String("match", ".", "regular expression without slash '/'")
 var replacementPtr = flag.String("replace", "{replacement}", "replacement")
+
+var camelCasePtr = flag.Bool("camel", false, "Use camel case converter")
+
 var replacementFormatPtr = flag.String("replace-format", "{replacement}", "replacement with format")
 var fileOnlyPtr = flag.Bool("fileonly", false, "file only")
 var dirOnlyPtr = flag.Bool("dironly", false, "directory only")
