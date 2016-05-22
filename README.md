@@ -19,33 +19,37 @@ Usage
 
 When [path...] is not given, "./" will be used as the default path for scanning files.
 
-
-Options
----------------
+## Filter Options
 
 - `-match` the pattern that will match the files/dirs you want.
+- `-fileonly` rename only files.
+- `-dironly` rename only directory.
+- `-forext` rename only matched extension.
+
+## Replace Options
+
 - `-replace` replace the matched string with what you want.
+
+## Helper Options (combines built-in rules)
 
 - `-trimprefix` trim filename prefix. When using this option, you don't have to specify `-match` or `-replace`.
 - `-trimsuffix` trim filename suffix (including extension). When using this option, you don't have to specify `-match` or `-replace`.
 
+## Common Options
+
 - `-dryrun`  dry run, don't rename, just preview the result.
-- `-fileonly` rename only files.
-- `-dironly` rename only directory.
-- `-forext` rename only matched extension.
 - `-c=2` number of workers. (concurrency)
 
+Some Examples
+-------------
 
-Examples
----------------
+Replace `Stmt.go` with "_stmt.go" under the current directory:
 
-Replace `_stmt.go` with "_stmt.go" under the current directory:
+    fsrename -match "Stmt.go" -replace "_stmt.go"
 
-    fsrename -match "_stmt.go" -replace "_stmt.go"
+Replace `Stmt.go` with "_stmt.go" under directory `src/c6`:
 
-Replace `_stmt.go` with "_stmt.go" under directory `src/c6`:
-
-    fsrename -match "_stmt.go" -replace "_stmt.go" src/c6
+    fsrename -match "Stmt.go" -replace "_stmt.go" src/c6
 
 Use regular expression without escaping:
 
