@@ -19,6 +19,9 @@ type Worker func(cv chan bool, input chan *FileEntry, output chan *FileEntry)
 
 type Producer func(cv chan bool, output chan *FileEntry)
 
+/*
+Scanner worker decides what entry comes in from the given path.
+*/
 func CreateScannerWorker(scanPath string, settings ScannerSettings) Worker {
 	return func(cv chan bool, input chan *FileEntry, output chan *FileEntry) {
 		matches, err := filepath.Glob(scanPath)
