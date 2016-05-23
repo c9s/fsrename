@@ -3,6 +3,7 @@ package fsrename
 import "strings"
 import "regexp"
 import "fmt"
+import "path"
 
 type Action interface {
 	Act(entry *FileEntry) bool
@@ -19,8 +20,12 @@ func NewStrReplaceAction(search, replace string, n int) *StrReplaceAction {
 }
 
 func (s *StrReplaceAction) Act(entry *FileEntry) bool {
-	entry.newpath = strings.Replace(entry.path, s.Search, s.Replace, s.N)
-	return true
+	if strings.Contains(entry.base, s.Search) {
+		newbase := strings.Replace(entry.base, s.Search, s.Replace, s.N)
+		entry.newpath = path.Join(entry.dir, newbase)
+		return true
+	}
+	return false
 }
 
 type StrFormatReplaceAction struct {
@@ -35,9 +40,10 @@ func NewStrFormatReplaceAction(search, replaceFormat string) *StrFormatReplaceAc
 }
 
 func (s *StrFormatReplaceAction) Act(entry *FileEntry) bool {
-	if strings.Contains(entry.path, s.Search) {
+	if strings.Contains(entry.base, s.Search) {
 		format := fmt.Sprintf(s.ReplaceFormat, s.Seq.Next())
-		entry.newpath = strings.Replace(entry.path, s.Search, format, s.N)
+		newbase := strings.Replace(entry.base, s.Search, format, s.N)
+		entry.newpath = path.Join(entry.dir, newbase)
 		return true
 	}
 	return false
@@ -58,8 +64,12 @@ func NewRegExpReplaceActionWithPattern(pattern string, replace string) *RegExpRe
 }
 
 func (s *RegExpReplaceAction) Act(entry *FileEntry) bool {
-	entry.newpath = s.Matcher.ReplaceAllString(entry.path, s.Replace)
-	return true
+	if s.Matcher.MatchString(entry.base) {
+		newbase := s.Matcher.ReplaceAllString(entry.base, s.Replace)
+		entry.newpath = path.Join(entry.dir, newbase)
+		return true
+	}
+	return false
 }
 
 type RegExpFormatReplaceAction struct {
@@ -73,9 +83,10 @@ func NewRegExpFormatReplaceAction(matcher *regexp.Regexp, replaceFormat string) 
 }
 
 func (s *RegExpFormatReplaceAction) Act(entry *FileEntry) bool {
-	if s.Matcher.MatchString(entry.path) {
+	if s.Matcher.MatchString(entry.base) {
 		format := fmt.Sprintf(s.ReplaceFormat, s.Seq.Next())
-		entry.newpath = s.Matcher.ReplaceAllString(entry.path, format)
+		newbase := s.Matcher.ReplaceAllString(entry.base, format)
+		entry.newpath = path.Join(entry.dir, newbase)
 		return true
 	}
 	return false

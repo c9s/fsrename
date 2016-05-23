@@ -29,7 +29,7 @@ func (self *GlobScanner) Run() {
 			}
 			for _, match := range matches {
 				var err = filepath.Walk(match, func(path string, info os.FileInfo, err error) error {
-					self.output <- &FileEntry{path: path, info: info}
+					self.output <- NewFileEntryWithInfo(path, info)
 					return err
 				})
 				if err != nil {

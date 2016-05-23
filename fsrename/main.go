@@ -4,9 +4,7 @@ import "flag"
 import "os"
 import "fmt"
 import "log"
-
-// import "path/filepath"
-// import "sync"
+import "regexp"
 import "github.com/c9s/fsrename"
 
 // filter options
@@ -16,14 +14,14 @@ var fileOnlyOpt = flag.Bool("file", false, "file only")
 var dirOnlyOpt = flag.Bool("dir", false, "directory only")
 
 // replacement options
-var replaceOpt = flag.String("replace", "", "search")
-var replaceRegexpOpt = flag.String("replaceRegexp", "", "search")
-var withOpt = flag.String("with", "", "replacement")
-var withFormatOpt = flag.String("withFormat", "", "replacement format")
+var replaceOpt = flag.String("replace", "{nil}", "search")
+var replaceRegexpOpt = flag.String("replaceRegexp", "{nil}", "search")
+var withOpt = flag.String("with", "{nil}", "replacement")
+var withFormatOpt = flag.String("withFormat", "{nil}", "replacement format")
 
 // rule builders
-var trimPrefixOpt = flag.String("trimprefix", "", "trim prefix")
-var trimSuffixOpt = flag.String("trimsuffix", "", "trim suffix")
+var trimPrefixOpt = flag.String("trimPrefix", "", "trim prefix")
+var trimSuffixOpt = flag.String("trimSuffix", "", "trim suffix")
 
 // runtime option
 var dryRunOpt = flag.Bool("dryrun", false, "dry run only")
@@ -96,25 +94,34 @@ func main() {
 		}
 	}
 
+	if *trimPrefixOpt != "" {
+		*replaceRegexpOpt = "^" + regexp.QuoteMeta(*trimPrefixOpt)
+		*withOpt = ""
+	}
+	if *trimSuffixOpt != "" {
+		*replaceRegexpOpt = regexp.QuoteMeta(*trimSuffixOpt) + "$"
+		*withOpt = ""
+	}
+
 	// string replace is enabled
-	if *replaceOpt != "" || *replaceRegexpOpt != "" {
-		if *withOpt == "" && *withFormatOpt == "" {
+	if *replaceOpt != "{nil}" || *replaceRegexpOpt != "{nil}" {
+		if *withOpt == "{nil}" && *withFormatOpt == "{nil}" {
 			log.Fatalln("replacement option is required. use -with 'replacement' or -withFormat 'format'.")
 		}
 
-		if *replaceRegexpOpt != "" {
-			if *withOpt != "" {
+		if *replaceRegexpOpt != "{nil}" {
+			if *withOpt != "{nil}" {
 				chain = chain.Chain(fsrename.NewRegExpReplacer(*replaceRegexpOpt, *withOpt))
 				go chain.Run()
-			} else if *withFormatOpt != "" {
+			} else if *withFormatOpt != "{nil}" {
 				chain = chain.Chain(fsrename.NewRegExpFormatReplacer(*replaceRegexpOpt, *withFormatOpt))
 				go chain.Run()
 			}
 		} else {
-			if *withOpt != "" {
+			if *withOpt != "{nil}" {
 				chain = chain.Chain(fsrename.NewStrReplacer(*replaceOpt, *withOpt, -1))
 				go chain.Run()
-			} else if *withFormatOpt != "" {
+			} else if *withFormatOpt != "{nil}" {
 				chain = chain.Chain(fsrename.NewFormatReplacer(*replaceOpt, *withFormatOpt))
 				go chain.Run()
 			}
