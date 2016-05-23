@@ -9,12 +9,12 @@ fsrename separates the pattern option, therefore you can specify the pattern wit
 
 further, this tool supports concurrent renaming (powered by Go's channel and routine)
 
-Install
+INSTALL
 --------------
 
     go get -u -x github.com/c9s/fsrename/fsrename
 
-Usage
+USAGE
 ---------------------
 
     fsrename [options] [path...]
@@ -25,14 +25,19 @@ To see the documentation in console:
 
     go doc github.com/c9s/fsrename/fsrename
 
-You can link the binary file to your GOPATH to create an doc alias for this
+You can create a link to the package under your GOPATH to create an doc alias
 
     P=$(echo $GOPATH|cut -d: -f1)
     ln -s $P/src/github.com/c9s/fsrename/fsrename $P/src/fsrename
 
-## Options
+    # see the document
+    go doc fsrename
 
-### Filter Options
+
+
+## OPTIONS
+
+### FILTER OPTIONS
 
 `-match` pre-filter the files and directories based on the given regular pattern.
 
@@ -49,7 +54,7 @@ You can link the binary file to your GOPATH to create an doc alias for this
 `-ext` find files with matched file extension.
 
 
-### Replacement Options
+### REPLACEMENT OPTIONS
 
 Please note the replacement target only works for the basename of a path.
 `-replace*` and `-with*` should be combined together to replace the substrings.
@@ -68,7 +73,7 @@ Please note the replacement target only works for the basename of a path.
 
 `-withFormat` replacement with fmt.Sprintf format for the target substring.
 
-### Replace Rule Builder Options
+### REPLACE RULE BUILDER OPTIONS
 
 `-trimPrefix` trim filename prefix.
 
@@ -84,9 +89,7 @@ Please note the replacement target only works for the basename of a path.
 
 
 
-
-Quick Examples
--------------
+## QUICK EXAMPLES
 
 Find files with extension `.php` and replace the substring from the filename.
 
@@ -119,7 +122,6 @@ Use regular expression without escaping:
     fsrename -dir -replace "_xxx" -with "_aaa" src/c6
 
     fsrename -replace "_xxx" -with "_aaa" -dryrun  src/c6
-
 
 
 ## Roadmap
