@@ -1,6 +1,8 @@
 FSRename - Fast & Simple Rename
 ================================
 
+[![Build Status](https://travis-ci.org/c9s/fsrename.svg?branch=master)](https://travis-ci.org/c9s/fsrename)
+
 A simple, powerful rename tool supports complex filtering
 
 fsrename separates the pattern option, therefore you can specify the pattern without typeing these character escapes.
