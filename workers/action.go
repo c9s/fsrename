@@ -17,8 +17,9 @@ func NewStrReplaceAction(search, replace string, n int) *StrReplaceAction {
 	return &StrReplaceAction{search, replace, n}
 }
 
-func (s *StrReplaceAction) Act(entry *FileEntry) {
+func (s *StrReplaceAction) Act(entry *FileEntry) bool {
 	entry.newpath = strings.Replace(entry.path, s.Search, s.Replace, s.N)
+	return true
 }
 
 type RegExpAction struct {
@@ -35,6 +36,7 @@ func NewRegExpActionWithPattern(pattern string, replace string) *RegExpAction {
 	return &RegExpAction{matcher, replace}
 }
 
-func (s *RegExpAction) Act(entry *FileEntry) {
+func (s *RegExpAction) Act(entry *FileEntry) bool {
 	entry.newpath = s.Matcher.ReplaceAllString(entry.path, s.Replace)
+	return true
 }

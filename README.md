@@ -22,8 +22,8 @@ When [path...] is not given, "./" will be used as the default path for scanning 
 ## Filter Options
 
 - `-match` match option filters the files and directories based on the given regular pattern.
-- `-fileonly` filter files.
-- `-dironly` filter directories.
+- `-file` filter files.
+- `-dir` filter directories.
 - `-forext` find files with matched file extension.
 
 ## Replace Options
@@ -56,10 +56,10 @@ Use regular expression without escaping:
 
     fsrename -match "_[a-z]*.go" -replace ".go" src/c6
 
-    fsrename -fileonly -match "_[a-z]*.go" -replace ".go" src/c6
+    fsrename -file -match "_[a-z]*.go" -replace ".go" src/c6
 
-    fsrename -fileonly -forExt go -match "[a-z]*" -replace "123" src/c6
+    fsrename -file -forExt go -match "[a-z]*" -replace "123" src/c6
 
-    fsrename -dironly -match "_xxx" -replace "_aaa" src/c6
+    fsrename -dir -replace "_xxx" -with "_aaa" src/c6
 
-    fsrename -dryrun -match "_xxx" -replace "_aaa" src/c6
+    fsrename -dryrun -replace "_xxx" -with "_aaa" src/c6
