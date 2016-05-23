@@ -10,8 +10,7 @@ further, this tool supports concurrent renaming (powered by Go's channel and rou
 Install
 --------------
 
-    go get -u -x github.com/c9s/fsrename
-
+    go get -u -x github.com/c9s/fsrename/fsrename
 
 Usage
 ---------------------
