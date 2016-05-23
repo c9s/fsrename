@@ -1,4 +1,4 @@
-package workers
+package fsrename
 
 /*
 PrefixFilter is actually a regexp filter that generates the pattern from the prefix

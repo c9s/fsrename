@@ -1,4 +1,4 @@
-package workers
+package fsrename
 
 import "testing"
 import "github.com/stretchr/testify/assert"

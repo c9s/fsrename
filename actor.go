@@ -1,4 +1,4 @@
-package workers
+package fsrename
 
 type Actor struct {
 	*BaseWorker
@@ -21,6 +21,7 @@ func (a *Actor) Run() {
 				return
 			}
 			a.Action.Act(entry)
+			a.output <- entry
 		}
 	}
 }

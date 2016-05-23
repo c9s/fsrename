@@ -1,4 +1,4 @@
-package workers
+package fsrename
 
 import "os"
 
@@ -6,9 +6,6 @@ type FileEntry struct {
 	path    string
 	info    os.FileInfo
 	newpath string
-
-	// an object pointer with Action interface
-	action Action
 }
 
 func MustNewFileEntry(filepath string) *FileEntry {
@@ -16,7 +13,7 @@ func MustNewFileEntry(filepath string) *FileEntry {
 	if err != nil {
 		panic(err)
 	}
-	return &FileEntry{filepath, info, "", nil}
+	return &FileEntry{filepath, info, ""}
 }
 
 func NewFileEntry(filepath string) (*FileEntry, error) {
@@ -24,6 +21,6 @@ func NewFileEntry(filepath string) (*FileEntry, error) {
 	if err != nil {
 		return nil, err
 	}
-	e := FileEntry{filepath, info, "", nil}
+	e := FileEntry{filepath, info, ""}
 	return &e, nil
 }

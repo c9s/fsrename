@@ -1,7 +1,11 @@
-package workers
+package fsrename
 
 type DirFilter struct {
 	*BaseWorker
+}
+
+func NewDirFilter() *DirFilter {
+	return &DirFilter{NewBaseWorker()}
 }
 
 func (w *DirFilter) Run() {

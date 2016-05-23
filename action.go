@@ -1,4 +1,4 @@
-package workers
+package fsrename
 
 import "strings"
 import "regexp"

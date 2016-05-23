@@ -1,4 +1,4 @@
-package workers
+package fsrename
 
 import "fmt"
 import "strings"
@@ -28,13 +28,14 @@ func (w *ConsolePrinter) Run() {
 				w.emitEnd()
 				return
 			}
+
 			// trim pwd paths
 			if strings.HasPrefix(entry.path, pwd) {
 				var oldpath = strings.TrimLeft(strings.Replace(entry.path, pwd, "", 1), "/")
 				var newpath = strings.TrimLeft(strings.Replace(entry.path, pwd, "", 1), "/")
-				fmt.Printf("'%s' => '%s'\n", oldpath, newpath)
+				fmt.Printf("./%s => ./%s\n", oldpath, newpath)
 			} else {
-				fmt.Printf("'%s' => '%s'\n", entry.path, entry.newpath)
+				fmt.Printf("%s => %s\n", entry.path, entry.newpath)
 			}
 		}
 	}

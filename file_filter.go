@@ -1,4 +1,4 @@
-package workers
+package fsrename
 
 type FileFilter struct {
 	*BaseWorker
