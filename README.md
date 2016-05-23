@@ -3,11 +3,14 @@ FSRename v2 - Fast & Simple Rename
 
 [![Build Status](https://travis-ci.org/c9s/fsrename.svg?branch=master)](https://travis-ci.org/c9s/fsrename)
 
-A simple, powerful rename tool supports complex filtering
+A simple, powerful rename tool supports complex filtering, written in GO.
 
-fsrename separates the pattern option, therefore you can specify the pattern without typeing these character escapes.
+`fsrename` separates the pattern/replace options, therefore you can specify the
+pattern without typing these escaping characters.
 
-further, this tool supports concurrent renaming (powered by Go's channel and routine)
+pre-filtering, extension filtering, prefix trimming, suffix trimming ,
+camelcase conversion, underscore conversion are all supported.
+
 
 INSTALL
 --------------
