@@ -80,3 +80,10 @@ Use regular expression without escaping:
     fsrename -dir -replace "_xxx" -with "_aaa" src/c6
 
     fsrename -replace "_xxx" -with "_aaa" -dryrun  src/c6
+
+
+
+## LICENSE
+
+MIT License
+
