@@ -31,7 +31,11 @@ When `[path...]` is not given, "./" will be used as the default path for scannin
 
 `-file` only for files.
 
+`-f` an alias of `-file`
+
 `-dir` only for directories.
+
+`-d` an alias of `-d`
 
 `-ext` find files with matched file extension.
 

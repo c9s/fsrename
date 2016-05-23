@@ -12,7 +12,9 @@ var matchOpt = flag.String("match", "", "pre-filter (regular expression without 
 var containsOpt = flag.String("contains", "", "strings.contains filter")
 var extOpt = flag.String("ext", "", "extension name filter")
 var fileOnlyOpt = flag.Bool("file", false, "file only")
+var fOpt = flag.Bool("f", false, "an alias of file only")
 var dirOnlyOpt = flag.Bool("dir", false, "directory only")
+var dOpt = flag.Bool("d", false, "an alias of dir only")
 
 // replacement options
 var replaceOpt = flag.String("replace", "{nil}", "search")
@@ -60,6 +62,24 @@ func main() {
 	chain = scanner
 	go scanner.Run()
 
+	// copy short option to long option
+	if *rOpt != "{nil}" {
+		*replaceOpt = *rOpt
+	}
+	if *rreOpt != "{nil}" {
+		*replaceRegexpOpt = *rreOpt
+	}
+	if *wOpt != "{nil}" {
+		*withOpt = *wOpt
+	}
+
+	if *fOpt == true {
+		*fileOnlyOpt = true
+	}
+	if *dOpt == true {
+		*dirOnlyOpt = true
+	}
+
 	if *fileOnlyOpt == true {
 		chain = chain.Chain(fsrename.NewFileFilter())
 		go chain.Run()
@@ -105,17 +125,6 @@ func main() {
 			go chain.Run()
 			break
 		}
-	}
-
-	// copy short option to long option
-	if *rOpt != "{nil}" {
-		*replaceOpt = *rOpt
-	}
-	if *rreOpt != "{nil}" {
-		*replaceRegexpOpt = *rreOpt
-	}
-	if *wOpt != "{nil}" {
-		*withOpt = *wOpt
 	}
 
 	if *trimPrefixOpt != "" {
