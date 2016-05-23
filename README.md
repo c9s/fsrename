@@ -113,6 +113,13 @@ Use regular expression without escaping:
 
 
 
+## Roadmap
+
+v2.1
+
+- [ ] Add `-list` to print the filtered file paths instead of renaming the files.
+
+
 ## LICENSE
 
 MIT License
