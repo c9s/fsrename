@@ -19,7 +19,16 @@ Usage
 
     fsrename [options] [path...]
 
-When `[path...]` is not given, "./" will be used as the default path for scanning files.
+> Note: When `[path...]` is not given, "./" will be used as the default path for scanning files.
+
+To see the documentation in console:
+
+    go doc github.com/c9s/fsrename/fsrename
+
+You can link the binary file to your GOPATH to create an doc alias for this
+
+    P=$(echo $GOPATH|cut -d: -f1)
+    ln -s $P/src/github.com/c9s/fsrename/fsrename $P/src/fsrename
 
 ## Options
 

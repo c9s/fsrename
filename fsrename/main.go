@@ -2,17 +2,21 @@
 // license that can be found in the LICENSE file.
 
 /*
-## Usage
+NAME
+
+	fsrename
+
+SYNOPSIS
 
     fsrename [options] [path...]
 
-When `[path...]` is not given, "./" will be used as the default path for scanning files.
+DESCRIPTION
 
+	When `[path...]` is not given, "./" will be used as the default path for scanning files.
 
+OPTIONS
 
-## Options
-
-### Filter Options
+	FILTER OPTIONS
 
 	-match
 
@@ -36,28 +40,28 @@ When `[path...]` is not given, "./" will be used as the default path for scannin
 		find files with matched file extension.
 
 
-### Replacement Options
+	REPLACEMENT OPTIONS
 
-Please note the replacement target only works for the basename of a path.
--replace* and -with* should be combined together to replace the substrings.
+	Please note the replacement target only works for the basename of a path.
+	-replace* and -with* should be combined together to replace the substrings.
 
-	-replace, -r
+		-replace, -r
 
-		specify target substring with normal string matching.
+			specify target substring with normal string matching.
 
-	-replaceRegexp, -rre
+		-replaceRegexp, -rre
 
-		specify target substring with regular expression matching.
+			specify target substring with regular expression matching.
 
-	-with, -w
+		-with, -w
 
-		replacement for the target substring.
+			replacement for the target substring.
 
-	-withFormat
+		-withFormat
 
-		replacement with fmt.Sprintf format for the target substring.
+			replacement with fmt.Sprintf format for the target substring.
 
-### Replace Rule Builder Options
+	REPLACE RULE BUILDER OPTIONS
 
 	-trimPrefix
 
@@ -76,47 +80,45 @@ Please note the replacement target only works for the basename of a path.
 
 		converts camelcase filesnames into underscore separated filenames.
 
-### Common Options
+	COMMON OPTIONS
 
-	-dryrun
+		-dryrun
 
-		dry run, don't rename, just preview the result.
+			dry run, don't rename, just preview the result.
 
-## Quick Examples
+	QUICK EXAMPLES
 
+	Find files with extension `.php` and replace the substring from the filename.
 
-Find files with extension `.php` and replace the substring from the filename.
+		fsrename -ext "php" -replace "some" -with "others" src/
 
-    fsrename -ext "php" -replace "some" -with "others" src/
+	Replace `Stmt.go` with "_stmt.go" under the current directory:
 
-Replace `Stmt.go` with "_stmt.go" under the current directory:
+		fsrename -replace "Stmt.go" -with "_stmt.go"
 
-    fsrename -replace "Stmt.go" -with "_stmt.go"
+	Replace `Stmt.go` with "_stmt.go" under directory `src/c6`:
 
-Replace `Stmt.go` with "_stmt.go" under directory `src/c6`:
+		fsrename -replace "Stmt.go" -with "_stmt.go" src/c6
 
-    fsrename -replace "Stmt.go" -with "_stmt.go" src/c6
+	Replace `foo` with `bar` from files contains `prefix_`
 
-Replace `foo` with `bar` from files contains `prefix_`
+		fsrename -file -contains prefix_ -replace foo -with bar test
 
-    fsrename -file -contains prefix_ -replace foo -with bar test
+	Or use `-match` to pre-filter the files with regular expression
 
-Or use `-match` to pre-filter the files with regular expression
+		fsrename -file -match "[a-z]+" -replace foo -with bar test
 
-    fsrename -file -match "[a-z]+" -replace foo -with bar test
+	Use regular expression without escaping:
 
-Use regular expression without escaping:
+		fsrename -replaceRegexp "_[a-z]*.go" -with ".go" src/c6
 
-    fsrename -replaceRegexp "_[a-z]*.go" -with ".go" src/c6
+		fsrename -file -replaceRegexp "_[a-z]*.go" -with ".go" src/c6
 
-    fsrename -file -replaceRegexp "_[a-z]*.go" -with ".go" src/c6
+		fsrename -file -ext go -replaceRegexp "[a-z]*" -with "123" src/c6
 
-    fsrename -file -ext go -replaceRegexp "[a-z]*" -with "123" src/c6
+		fsrename -dir -replace "_xxx" -with "_aaa" src/c6
 
-    fsrename -dir -replace "_xxx" -with "_aaa" src/c6
-
-    fsrename -replace "_xxx" -with "_aaa" -dryrun  src/c6
-
+		fsrename -replace "_xxx" -with "_aaa" -dryrun  src/c6
 */
 package main
 
