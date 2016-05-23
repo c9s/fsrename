@@ -34,6 +34,7 @@ When `[path...]` is not given, "./" will be used as the default path for scannin
 ### Replacement Options
 
 Please note the replacement target only works for the basename of a path.
+`-replace*` and `-with*` should be combined together to replace the substrings.
 
 `-replace` specify target substring with normal string matching.
 `-r` alias of `-replace`
@@ -47,8 +48,7 @@ Please note the replacement target only works for the basename of a path.
 `-w` alias of `-with`
 
 
-
-- `-withFormat` replacement with fmt.Sprintf format for the target substring.
+`-withFormat` replacement with fmt.Sprintf format for the target substring.
 
 ### Replace Rule Builder Options
 
