@@ -106,6 +106,9 @@ Replace `Stmt.go` with "_stmt.go" under directory `src/c6`:
 
     fsrename -replace "Stmt.go" -with "_stmt.go" src/c6
 
+    # -r is a shorthand of -replace
+    fsrename -r "Stmt.go" -with "_stmt.go" src/c6
+
 Replace `foo` with `bar` from files contains `prefix_` 
 
     fsrename -file -contains prefix_ -replace foo -with bar test
@@ -117,6 +120,9 @@ Or use `-match` to pre-filter the files with regular expression
 Use regular expression without escaping:
 
     fsrename -replaceRegexp "_[a-z]*.go" -with ".go" src/c6
+
+    # -rre is a shorthand of -replaceRegexp
+    fsrename -rre "_[a-z]*.go" -with ".go" src/c6
 
     fsrename -file -replaceRegexp "_[a-z]*.go" -with ".go" src/c6
 
