@@ -4,7 +4,7 @@ import (
 	"sort"
 )
 
-type FileEntries []*FileEntry
+type FileEntries []FileEntry
 
 func (files FileEntries) Len() int           { return len(files) }
 func (files FileEntries) Less(i, j int) bool { return files[i].path < files[j].path }
