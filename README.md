@@ -21,7 +21,8 @@ When [path...] is not given, "./" will be used as the default path for scanning 
 
 ## Filter Options
 
-- `-match` match option filters the files and directories based on the given regular pattern.
+- `-match` pre-filter the files and directories based on the given regular pattern.
+- `-contains` pre-filter the files and directories based on the given string needle.
 - `-file` only for files.
 - `-dir` only for directories.
 - `-forext` find files with matched file extension.
@@ -58,7 +59,11 @@ Replace `Stmt.go` with "_stmt.go" under directory `src/c6`:
 
 Replace `foo` with `bar` from files contains `prefix_` 
 
-    fsrename -file -match prefix_ -replace foo -with bar test
+    fsrename -file -contains prefix_ -replace foo -with bar test
+
+Or use `-match` to pre-filter the files with regular expression
+
+    fsrename -file -match "[a-z]+" -replace foo -with bar test
 
 Use regular expression without escaping:
 
