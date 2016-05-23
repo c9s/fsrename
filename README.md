@@ -1,6 +1,6 @@
 FSRename
 ======================
-A rename tool that supports concurrent renaming.
+A simple, powerful rename tool supports complex filtering
 
 fsrename separates the pattern option, therefore you can specify the pattern without typeing these character escapes.
 
@@ -21,14 +21,15 @@ When [path...] is not given, "./" will be used as the default path for scanning 
 
 ## Filter Options
 
-- `-match` the pattern that will match the files/dirs you want.
-- `-fileonly` rename only files.
-- `-dironly` rename only directory.
-- `-forext` rename only matched extension.
+- `-match` match option filters the files and directories based on the given regular pattern.
+- `-fileonly` filter files.
+- `-dironly` filter directories.
+- `-forext` find files with matched file extension.
 
 ## Replace Options
 
 - `-replace` replace the matched string with what you want.
+- `-with` replace the matched string with what you want.
 
 ## Helper Options (combines built-in rules)
 
