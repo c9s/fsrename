@@ -25,11 +25,16 @@ When `[path...]` is not given, "./" will be used as the default path for scannin
 
 ### Filter Options
 
-- `-match` pre-filter the files and directories based on the given regular pattern.
-- `-contains` pre-filter the files and directories based on the given string needle.
-- `-file` only for files.
-- `-dir` only for directories.
-- `-ext` find files with matched file extension.
+`-match` pre-filter the files and directories based on the given regular pattern.
+
+`-contains` pre-filter the files and directories based on the given string needle.
+
+`-file` only for files.
+
+`-dir` only for directories.
+
+`-ext` find files with matched file extension.
+
 
 ### Replacement Options
 
