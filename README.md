@@ -19,7 +19,9 @@ Usage
 
 When `[path...]` is not given, "./" will be used as the default path for scanning files.
 
-## Filter Options
+## Options
+
+### Filter Options
 
 - `-match` pre-filter the files and directories based on the given regular pattern.
 - `-contains` pre-filter the files and directories based on the given string needle.
@@ -27,7 +29,7 @@ When `[path...]` is not given, "./" will be used as the default path for scannin
 - `-dir` only for directories.
 - `-ext` find files with matched file extension.
 
-## Replace Options
+### Replace Options
 
 Please note the replacement target only works for the basename of a path.
 
@@ -37,14 +39,17 @@ Please note the replacement target only works for the basename of a path.
 - `-with` replacement for the target substring.
 - `-withFormat` replacement with fmt.Sprintf format for the target substring.
 
-## Replace Rule Builder Options
+### Replace Rule Builder Options
 
 - `-trimPrefix` trim filename prefix.
 - `-trimSuffix` trim filename suffix (this option removes suffix even for filename extensions).
 
-## Common Options
+### Common Options
 
 - `-dryrun`  dry run, don't rename, just preview the result.
+
+
+
 
 Quick Examples
 -------------
