@@ -10,7 +10,7 @@ func TestScanner(t *testing.T) {
 	worker.SetInput(input)
 	worker.SetOutput(output)
 	go worker.Run()
-	input <- &FileEntry{"tests/scanner", nil, ""}
+	input <- &FileEntry{"tests/scanner", nil, "", nil}
 	input <- nil
 	assert.NotNil(t, output)
 
@@ -46,7 +46,7 @@ func TestSimpleRegExpPipe(t *testing.T) {
 
 	input := NewFileStream()
 	scanner.SetInput(input)
-	input <- &FileEntry{"tests", nil, ""}
+	input <- &FileEntry{"tests", nil, "", nil}
 	input <- nil
 	output := filter2.Output()
 	assert.NotNil(t, output)
@@ -66,7 +66,7 @@ func TestSimpleFilePipe(t *testing.T) {
 	input := NewFileStream()
 	scanner.SetInput(input)
 
-	input <- &FileEntry{"tests/scanner", nil, ""}
+	input <- MustNewFileEntry("tests/scanner")
 	input <- nil
 	output := filter.Output()
 	assert.NotNil(t, output)
@@ -85,7 +85,7 @@ func TestSimpleReverseSorter(t *testing.T) {
 	input := NewFileStream()
 	scanner.SetInput(input)
 
-	input <- &FileEntry{"tests", nil, ""}
+	input <- MustNewFileEntry("tests")
 	input <- nil
 
 	output := sorter.Output()
