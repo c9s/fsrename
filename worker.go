@@ -8,8 +8,6 @@ func NewFileStream() FileStream {
 	return make(FileStream, 10)
 }
 
-type WorkerHandle func(input FileStream)
-
 type Worker interface {
 	SetInput(input FileStream)
 	SetOutput(output FileStream)
