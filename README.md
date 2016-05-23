@@ -31,20 +31,20 @@ When `[path...]` is not given, "./" will be used as the default path for scannin
 - `-dir` only for directories.
 - `-ext` find files with matched file extension.
 
-### Replace Options
+### Replacement Options
 
 Please note the replacement target only works for the basename of a path.
 
-- `-replace` specify target substring with normal string matching.
-- `-r` alias of `-replace`
+`-replace` specify target substring with normal string matching.
+`-r` alias of `-replace`
 
 
-- `-replaceRegexp` specify target substring with regular expression matching.
-- `-rre` alias of `-replaceRegexp`
+`-replaceRegexp` specify target substring with regular expression matching.
+`-rre` alias of `-replaceRegexp`
 
 
-- `-with` replacement for the target substring.
-- `-w` alias of `-with`
+`-with` replacement for the target substring.
+`-w` alias of `-with`
 
 
 
@@ -52,12 +52,17 @@ Please note the replacement target only works for the basename of a path.
 
 ### Replace Rule Builder Options
 
-- `-trimPrefix` trim filename prefix.
-- `-trimSuffix` trim filename suffix (this option removes suffix even for filename extensions).
+`-trimPrefix` trim filename prefix.
+
+`-trimSuffix` trim filename suffix (this option removes suffix even for filename extensions).
+
+`-camel` converts dash/underscore separated filenames into camelcase filenames.
+
+`-underscore` converts camelcase filesnames into underscore separated filenames.
 
 ### Common Options
 
-- `-dryrun`  dry run, don't rename, just preview the result.
+`-dryrun`  dry run, don't rename, just preview the result.
 
 
 
