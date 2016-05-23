@@ -12,6 +12,16 @@ type FileEntry struct {
 	message string
 }
 
+type FileEntries []FileEntry
+
+// A channel of file entries
+type FileStream chan *FileEntry
+
+// Create a channel for sending file entries
+func NewFileStream() FileStream {
+	return make(FileStream, 10)
+}
+
 func MustNewFileEntry(filepath string) *FileEntry {
 	entry, err := NewFileEntry(filepath)
 	if err != nil {
