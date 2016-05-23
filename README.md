@@ -17,7 +17,7 @@ Usage
 
     fsrename [options] [path...]
 
-When [path...] is not given, "./" will be used as the default path for scanning files.
+When `[path...]` is not given, "./" will be used as the default path for scanning files.
 
 ## Filter Options
 
@@ -25,7 +25,7 @@ When [path...] is not given, "./" will be used as the default path for scanning 
 - `-contains` pre-filter the files and directories based on the given string needle.
 - `-file` only for files.
 - `-dir` only for directories.
-- `-forext` find files with matched file extension.
+- `-ext` find files with matched file extension.
 
 ## Replace Options
 
@@ -48,6 +48,10 @@ Please note the replacement target only works for the basename of a path.
 
 Quick Examples
 -------------
+
+Find files with extension `.php` and replace the substring from the filename.
+
+    fsrename -ext "php" -replace "some" -with "others" src/
 
 Replace `Stmt.go` with "_stmt.go" under the current directory:
 
