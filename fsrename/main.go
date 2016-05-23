@@ -8,7 +8,8 @@ import "regexp"
 import "github.com/c9s/fsrename"
 
 // filter options
-var matchOpt = flag.String("match", ".", "regular expression without slash '/'")
+var matchOpt = flag.String("match", "", "pre-filter (regular expression without slash '/')")
+var containsOpt = flag.String("contains", "", "strings.contains filter")
 var extOpt = flag.String("ext", "", "extension name filter")
 var fileOnlyOpt = flag.Bool("file", false, "file only")
 var dirOnlyOpt = flag.Bool("dir", false, "directory only")
@@ -66,6 +67,15 @@ func main() {
 	}
 	if *extOpt != "" {
 		chain = chain.Chain(fsrename.NewFileExtFilter(*extOpt))
+		go chain.Run()
+	}
+
+	if *matchOpt != "" {
+		chain = chain.Chain(fsrename.NewRegExpFilterWithPattern(*matchOpt))
+		go chain.Run()
+	}
+	if *containsOpt != "" {
+		chain = chain.Chain(fsrename.NewStrContainsFilter(*containsOpt))
 		go chain.Run()
 	}
 

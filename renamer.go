@@ -7,7 +7,7 @@ type Rename struct{}
 
 func (r *Rename) Act(entry *FileEntry) bool {
 	if entry.newpath == "" {
-		entry.message = "empty file"
+		entry.message = "unchanged"
 		return false
 	}
 

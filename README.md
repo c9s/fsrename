@@ -22,44 +22,52 @@ When [path...] is not given, "./" will be used as the default path for scanning 
 ## Filter Options
 
 - `-match` match option filters the files and directories based on the given regular pattern.
-- `-file` filter files.
-- `-dir` filter directories.
+- `-file` only for files.
+- `-dir` only for directories.
 - `-forext` find files with matched file extension.
 
 ## Replace Options
 
-- `-replace` replace the matched string with what you want.
-- `-with` replace the matched string with what you want.
+Please note the replacement target only works for the basename of a path.
 
-## Helper Options (combines built-in rules)
+- `-replace` specify target substring with normal string matching.
+- `-replaceRegexp` specify target substring with regular expression matching.
 
-- `-trimprefix` trim filename prefix. When using this option, you don't have to specify `-match` or `-replace`.
-- `-trimsuffix` trim filename suffix (including extension). When using this option, you don't have to specify `-match` or `-replace`.
+- `-with` replacement for the target substring.
+- `-withFormat` replacement with fmt.Sprintf format for the target substring.
+
+## Replace Rule Builder Options
+
+- `-trimPrefix` trim filename prefix.
+- `-trimSuffix` trim filename suffix (this option removes suffix even for filename extensions).
 
 ## Common Options
 
 - `-dryrun`  dry run, don't rename, just preview the result.
-- `-c=2` number of workers. (concurrency)
 
-Some Examples
+Quick Examples
 -------------
 
 Replace `Stmt.go` with "_stmt.go" under the current directory:
 
-    fsrename -match "Stmt.go" -replace "_stmt.go"
+    fsrename -replace "Stmt.go" -with "_stmt.go"
 
 Replace `Stmt.go` with "_stmt.go" under directory `src/c6`:
 
-    fsrename -match "Stmt.go" -replace "_stmt.go" src/c6
+    fsrename -replace "Stmt.go" -with "_stmt.go" src/c6
+
+Replace `foo` with `bar` from files contains `prefix_` 
+
+    fsrename -file -match prefix_ -replace foo -with bar test
 
 Use regular expression without escaping:
 
-    fsrename -match "_[a-z]*.go" -replace ".go" src/c6
+    fsrename -replaceRegexp "_[a-z]*.go" -with ".go" src/c6
 
-    fsrename -file -match "_[a-z]*.go" -replace ".go" src/c6
+    fsrename -file -replaceRegexp "_[a-z]*.go" -with ".go" src/c6
 
-    fsrename -file -forExt go -match "[a-z]*" -replace "123" src/c6
+    fsrename -file -ext go -replaceRegexp "[a-z]*" -with "123" src/c6
 
     fsrename -dir -replace "_xxx" -with "_aaa" src/c6
 
-    fsrename -dryrun -replace "_xxx" -with "_aaa" src/c6
+    fsrename -replace "_xxx" -with "_aaa" -dryrun  src/c6

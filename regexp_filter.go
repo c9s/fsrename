@@ -27,7 +27,7 @@ func (w *RegExpFilter) Run() {
 				w.emitEnd()
 				return
 			}
-			if w.Matcher.MatchString(entry.info.Name()) {
+			if w.Matcher.MatchString(entry.base) {
 				w.output <- entry
 			}
 		}

@@ -32,9 +32,24 @@ func (w *ConsolePrinter) Run() {
 			if strings.HasPrefix(entry.path, pwd) {
 				var oldpath = strings.TrimLeft(strings.Replace(entry.path, pwd, "", 1), "/")
 				var newpath = strings.TrimLeft(strings.Replace(entry.path, pwd, "", 1), "/")
-				fmt.Printf("./%s -> ./%s [%s]\n", oldpath, newpath, entry.message)
+
+				fmt.Printf("./%s", oldpath)
+				if newpath != "" {
+					fmt.Printf(" -> ./%s", newpath)
+				}
+				if entry.message != "" {
+					fmt.Printf(" => [%s]", entry.message)
+				}
+				fmt.Printf("\n")
 			} else {
-				fmt.Printf("%s -> %s => [%s]\n", entry.path, entry.newpath, entry.message)
+				fmt.Printf("./%s", entry.path)
+				if entry.newpath != "" {
+					fmt.Printf(" -> ./%s", entry.newpath)
+				}
+				if entry.message != "" {
+					fmt.Printf(" => [%s]", entry.message)
+				}
+				fmt.Printf("\n")
 			}
 		}
 	}
