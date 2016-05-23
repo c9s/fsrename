@@ -1,6 +1,6 @@
 package fsrename
 
-func NewReplacer(search, replace string, n int) *Actor {
+func NewStrReplacer(search, replace string, n int) *Actor {
 	return NewActor(NewStrReplaceAction(search, replace, n))
 }
 

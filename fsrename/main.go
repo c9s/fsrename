@@ -17,20 +17,20 @@ var dirOnlyOpt = flag.Bool("dir", false, "directory only")
 
 // replacement options
 var replaceOpt = flag.String("replace", "{search}", "search")
+var replaceRegexpOpt = flag.String("replaceRegexp", "{search}", "search")
 var withOpt = flag.String("with", "", "replacement")
 var withFormatOpt = flag.String("withFormat", "", "replacement format")
+
+// rule builders
+var trimPrefixOpt = flag.String("trimprefix", "", "trim prefix")
+var trimSuffixOpt = flag.String("trimsuffix", "", "trim suffix")
 
 // runtime option
 var dryRunOpt = flag.Bool("dryrun", false, "dry run only")
 var orderOpt = flag.String("order", "", "order by")
 
 /*
- */
-
-/*
 var numOfWorkersPtr = flag.Int("c", 2, "the number of concurrent rename workers. default = 2")
-var trimPrefixPtr = flag.String("trimprefix", "", "trim prefix")
-var trimSuffixPtr = flag.String("trimsuffix", "", "trim suffix")
 var seqStart = flag.Int("seqstart", 0, "sequence number start with")
 var sequenceNumber int = 1
 */
@@ -97,12 +97,13 @@ func main() {
 	}
 
 	// string replace is enabled
-	if replaceOpt != nil {
+	if replaceOpt != nil || replaceRegexpOpt != nil {
 		if *withOpt == "" && *withFormatOpt == "" {
 			log.Fatalln("replacement option is required. use -with 'replacement' or -withFormat 'format'.")
 		}
+
 		if *withOpt != "" {
-			chain = chain.Chain(fsrename.NewReplacer(*replaceOpt, *withOpt, -1))
+			chain = chain.Chain(fsrename.NewStrReplacer(*replaceOpt, *withOpt, -1))
 			go chain.Run()
 		} else if *withFormatOpt != "" {
 			chain = chain.Chain(fsrename.NewFormatReplacer(*replaceOpt, *withFormatOpt))
