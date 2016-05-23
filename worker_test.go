@@ -10,7 +10,7 @@ func TestScanner(t *testing.T) {
 	worker.SetInput(input)
 	worker.SetOutput(output)
 	go worker.Run()
-	input <- &FileEntry{"tests/scanner", nil, "", nil}
+	input <- MustNewFileEntry("tests/scanner")
 	input <- nil
 	assert.NotNil(t, output)
 
@@ -46,7 +46,7 @@ func TestSimpleRegExpPipe(t *testing.T) {
 
 	input := NewFileStream()
 	scanner.SetInput(input)
-	input <- &FileEntry{"tests", nil, "", nil}
+	input <- MustNewFileEntry("tests")
 	input <- nil
 	output := filter2.Output()
 	assert.NotNil(t, output)

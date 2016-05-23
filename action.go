@@ -2,9 +2,27 @@ package fsrename
 
 import "strings"
 import "regexp"
+import "fmt"
 
 type Action interface {
 	Act(entry *FileEntry) bool
+}
+
+type StrFormatReplaceAction struct {
+	Search        string
+	ReplaceFormat string
+	N             int
+	Seq           *Sequence
+}
+
+func NewStrFormatReplaceAction(search, replaceFormat string) *StrFormatReplaceAction {
+	return &StrFormatReplaceAction{search, replaceFormat, 1, NewSequence(0, 1)}
+}
+
+func (s *StrFormatReplaceAction) Act(entry *FileEntry) bool {
+	format := fmt.Sprintf(s.ReplaceFormat, s.Seq.Next())
+	entry.newpath = strings.Replace(entry.path, s.Search, format, s.N)
+	return true
 }
 
 type StrReplaceAction struct {

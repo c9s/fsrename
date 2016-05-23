@@ -17,7 +17,8 @@ var dirOnlyOpt = flag.Bool("dir", false, "directory only")
 
 // replacement options
 var replaceOpt = flag.String("replace", "{search}", "search")
-var withOpt = flag.String("with", "{replacement}", "replacement")
+var withOpt = flag.String("with", "", "replacement")
+var withFormatOpt = flag.String("withFormat", "", "replacement format")
 
 // runtime option
 var dryRunOpt = flag.Bool("dryrun", false, "dry run only")
@@ -97,11 +98,16 @@ func main() {
 
 	// string replace is enabled
 	if replaceOpt != nil {
-		if *withOpt == "" {
-			log.Fatalln("replacement option is required. use -with 'replacement'")
+		if *withOpt == "" && *withFormatOpt == "" {
+			log.Fatalln("replacement option is required. use -with 'replacement' or -withFormat 'format'.")
 		}
-		chain = chain.Chain(fsrename.NewReplacer(*replaceOpt, *withOpt, -1))
-		go chain.Run()
+		if *withOpt != "" {
+			chain = chain.Chain(fsrename.NewReplacer(*replaceOpt, *withOpt, -1))
+			go chain.Run()
+		} else if *withFormatOpt != "" {
+			chain = chain.Chain(fsrename.NewFormatReplacer(*replaceOpt, *withFormatOpt))
+			go chain.Run()
+		}
 	}
 
 	if *dryRunOpt == false {
