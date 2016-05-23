@@ -11,6 +11,7 @@ import "github.com/c9s/fsrename"
 
 // filter options
 var matchOpt = flag.String("match", ".", "regular expression without slash '/'")
+var extOpt = flag.String("ext", "", "extension name filter")
 var fileOnlyOpt = flag.Bool("file", false, "file only")
 var dirOnlyOpt = flag.Bool("dir", false, "directory only")
 
@@ -18,16 +19,17 @@ var dirOnlyOpt = flag.Bool("dir", false, "directory only")
 var replaceOpt = flag.String("replace", "{search}", "search")
 var withOpt = flag.String("with", "{replacement}", "replacement")
 
+// runtime option
+var dryRunOpt = flag.Bool("dryrun", false, "dry run only")
+var orderOpt = flag.String("order", "", "order by")
+
 /*
-var extPtr = flag.String("ext", "", "extension name")
-var dryRunPtr = flag.Bool("dryrun", false, "dry run only")
-*/
+ */
 
 /*
 var numOfWorkersPtr = flag.Int("c", 2, "the number of concurrent rename workers. default = 2")
 var trimPrefixPtr = flag.String("trimprefix", "", "trim prefix")
 var trimSuffixPtr = flag.String("trimsuffix", "", "trim suffix")
-var orderBy = flag.String("orderby", "", "order by")
 var seqStart = flag.Int("seqstart", 0, "sequence number start with")
 var sequenceNumber int = 1
 */
@@ -56,29 +58,59 @@ func main() {
 	go scanner.Run()
 
 	if *fileOnlyOpt == true {
-		fileFilter := chain.Chain(fsrename.NewFileFilter())
-		go fileFilter.Run()
-		chain = fileFilter
+		chain = chain.Chain(fsrename.NewFileFilter())
+		go chain.Run()
 	}
 	if *dirOnlyOpt == true {
-		dirFilter := chain.Chain(fsrename.NewDirFilter())
-		go dirFilter.Run()
-		chain = dirFilter
+		chain = chain.Chain(fsrename.NewDirFilter())
+		go chain.Run()
+	}
+	if *extOpt != "" {
+		chain = chain.Chain(fsrename.NewFileExtFilter(*extOpt))
+		go chain.Run()
+	}
+
+	if *fileOnlyOpt && *orderOpt != "" {
+		switch *orderOpt {
+		case "reverse":
+			chain = chain.Chain(fsrename.NewReverseSorter())
+			go chain.Run()
+			break
+		case "mtime":
+			chain = chain.Chain(fsrename.NewMtimeSorter())
+			go chain.Run()
+			break
+		case "reverse-mtime":
+			chain = chain.Chain(fsrename.NewMtimeReverseSorter())
+			go chain.Run()
+			break
+		case "size":
+			chain = chain.Chain(fsrename.NewSizeSorter())
+			go chain.Run()
+			break
+		case "reverse-size":
+			chain = chain.Chain(fsrename.NewSizeReverseSorter())
+			go chain.Run()
+			break
+		}
 	}
 
 	// string replace is enabled
-	if *replaceOpt != "" {
+	if replaceOpt != nil {
 		if *withOpt == "" {
 			log.Fatalln("replacement option is required. use -with 'replacement'")
 		}
-		replacer := chain.Chain(fsrename.NewReplacer(*replaceOpt, *withOpt, -1))
-		go replacer.Run()
-		chain = replacer
+		chain = chain.Chain(fsrename.NewReplacer(*replaceOpt, *withOpt, -1))
+		go chain.Run()
 	}
 
-	printer := chain.Chain(fsrename.NewConsolePrinter())
-	go printer.Run()
-	chain = printer
+	if *dryRunOpt == false {
+		chain = chain.Chain(fsrename.NewRenamer())
+		go chain.Run()
+	}
+
+	chain = chain.Chain(fsrename.NewConsolePrinter())
+	go chain.Run()
 
 	// send paths
 	for _, path := range pathArgs {
@@ -86,34 +118,11 @@ func main() {
 	}
 	input <- nil
 
-	out := printer.Output()
+	out := chain.Output()
 	for {
 		entry := <-out
 		if entry == nil {
 			break
 		}
 	}
-
-	/*
-		if *matchPatternPtr == "" {
-			log.Fatalln("match pattern is required. use -match 'pattern'")
-		}
-		var matchRegExp = regexp.MustCompile(*matchPatternPtr)
-	*/
-
-	/*
-		if *replacementPtr == "{replacement}" && *replacementFormatPtr == "{replacement}" {
-			log.Fatalln("replacement is required. use -replace 'replacement' or -replace-format 'replacement with format'")
-		}
-		if *replacementFormatPtr != "{replacement}" {
-			sequenceNumber = *seqStart
-			*fileOnlyPtr = true
-		}
-
-		var extRegExp *regexp.Regexp = nil
-		if *extPr != "" {
-			extRegExp = regexp.MustCompile("\\." + *extPtr + "$")
-		}
-	*/
-
 }

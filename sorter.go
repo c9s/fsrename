@@ -4,18 +4,19 @@ import (
 	"sort"
 )
 
-type FileEntries []FileEntry
+type FileEntries []*FileEntry
 
-func (self FileEntries) Len() int           { return len(self) }
-func (self FileEntries) Less(i, j int) bool { return self[i].newpath < self[j].newpath }
-func (self FileEntries) Swap(i, j int)      { self[i], self[j] = self[j], self[i] }
-
+func (files FileEntries) Len() int           { return len(files) }
+func (files FileEntries) Less(i, j int) bool { return files[i].path < files[j].path }
+func (files FileEntries) Swap(i, j int) {
+	files[i], files[j] = files[j], files[i]
+}
 func (files FileEntries) Sort() { sort.Sort(files) }
 
 type ReverseSort struct{ FileEntries }
 
 func (self ReverseSort) Less(i, j int) bool {
-	return self.FileEntries[i].newpath > self.FileEntries[j].newpath
+	return self.FileEntries[i].path > self.FileEntries[j].path
 }
 
 type MtimeSort struct{ FileEntries }
@@ -46,6 +47,10 @@ type ReverseSorter struct {
 	*BaseWorker
 }
 
+func NewReverseSorter() *ReverseSorter {
+	return &ReverseSorter{NewBaseWorker()}
+}
+
 func (s *ReverseSorter) Run() {
 	var entries = s.BufferEntries()
 	sorter := ReverseSort{entries}
@@ -56,6 +61,10 @@ func (s *ReverseSorter) Run() {
 
 type MtimeSorter struct {
 	*BaseWorker
+}
+
+func NewMtimeSorter() *MtimeSorter {
+	return &MtimeSorter{NewBaseWorker()}
 }
 
 func (s *MtimeSorter) Run() {
@@ -70,6 +79,10 @@ type MtimeReverseSorter struct {
 	*BaseWorker
 }
 
+func NewMtimeReverseSorter() *MtimeReverseSorter {
+	return &MtimeReverseSorter{NewBaseWorker()}
+}
+
 func (s *MtimeReverseSorter) Run() {
 	var entries = s.BufferEntries()
 	sorter := MtimeReverseSort{entries}
@@ -82,6 +95,10 @@ type SizeSorter struct {
 	*BaseWorker
 }
 
+func NewSizeSorter() *SizeSorter {
+	return &SizeSorter{NewBaseWorker()}
+}
+
 func (s *SizeSorter) Run() {
 	var entries = s.BufferEntries()
 	sorter := SizeSort{entries}
@@ -92,6 +109,10 @@ func (s *SizeSorter) Run() {
 
 type SizeReverseSorter struct {
 	*BaseWorker
+}
+
+func NewSizeReverseSorter() *SizeReverseSorter {
+	return &SizeReverseSorter{NewBaseWorker()}
 }
 
 func (s *SizeReverseSorter) Run() {

@@ -85,8 +85,8 @@ func (w *BaseWorker) Chain(nextWorker Worker) Worker {
 	return nextWorker
 }
 
-func (w *BaseWorker) BufferEntries() []FileEntry {
-	var entries []FileEntry
+func (w *BaseWorker) BufferEntries() []*FileEntry {
+	var entries []*FileEntry
 	for {
 		select {
 		case <-w.stop:
@@ -96,13 +96,14 @@ func (w *BaseWorker) BufferEntries() []FileEntry {
 			if entry == nil {
 				return entries
 			}
-			entries = append(entries, *entry)
+			entries = append(entries, entry)
 		}
 	}
+	return entries
 }
 
-func (w *BaseWorker) FlushEntries(entries []FileEntry) {
+func (w *BaseWorker) FlushEntries(entries []*FileEntry) {
 	for _, entry := range entries {
-		w.output <- &entry
+		w.output <- entry
 	}
 }
