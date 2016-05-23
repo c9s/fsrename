@@ -119,6 +119,7 @@ v2.1
 
 - [ ] Add `-list` to print the filtered file paths instead of renaming the files.
 - [ ] Support more actions rather than file rename.
+  - [ ] `-backup` to backup selected files.
 - [ ] Add rename log printer to support rollback.
 - [ ] Add `-grep` to grep files that contains specific pattern.
 
