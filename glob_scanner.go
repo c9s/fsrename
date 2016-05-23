@@ -29,6 +29,13 @@ func (self *GlobScanner) Run() {
 			}
 			for _, match := range matches {
 				var err = filepath.Walk(match, func(path string, info os.FileInfo, err error) error {
+					base := filepath.Base(path)
+					if base == ".svn" || base == ".git" || base == ".hg" {
+						return filepath.SkipDir
+					}
+					if err != nil {
+						panic(err)
+					}
 					self.output <- NewFileEntryWithInfo(path, info)
 					return err
 				})

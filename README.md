@@ -136,8 +136,9 @@ v2.1
   - [ ] `-backup` to backup selected files.
 - [ ] Add rename log printer to support rollback.
 - [ ] Add `-grep` to grep files that contains specific pattern.
-- [ ] Ignore .git/.svn/.hg directories
+- [x] Ignore .git/.svn/.hg directories
 - [ ] Add `-cleanup` to clean up non-ascii characters
+- [ ] Add `--real` to solve symlink reference
 
 ## LICENSE
 
