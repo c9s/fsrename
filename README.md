@@ -1,4 +1,4 @@
-FSRename - Fast & Simple Rename
+FSRename v2 - Fast & Simple Rename
 ================================
 
 [![Build Status](https://travis-ci.org/c9s/fsrename.svg?branch=master)](https://travis-ci.org/c9s/fsrename)
@@ -36,9 +36,18 @@ When `[path...]` is not given, "./" will be used as the default path for scannin
 Please note the replacement target only works for the basename of a path.
 
 - `-replace` specify target substring with normal string matching.
+- `-r` alias of `-replace`
+
+
 - `-replaceRegexp` specify target substring with regular expression matching.
+- `-rre` alias of `-replaceRegexp`
+
 
 - `-with` replacement for the target substring.
+- `-w` alias of `-with`
+
+
+
 - `-withFormat` replacement with fmt.Sprintf format for the target substring.
 
 ### Replace Rule Builder Options

@@ -4,6 +4,7 @@ import "strings"
 import "regexp"
 import "fmt"
 import "path"
+import "strconv"
 
 type Action interface {
 	Act(entry *FileEntry) bool
@@ -49,6 +50,42 @@ func (s *StrFormatReplaceAction) Act(entry *FileEntry) bool {
 	return false
 }
 
+type UnderscoreAction struct {
+	spliter *regexp.Regexp
+}
+
+func NewUnderscoreAction() *UnderscoreAction {
+	spliter := regexp.MustCompile("[A-Z]")
+	return &UnderscoreAction{spliter}
+}
+
+func (a *UnderscoreAction) Act(entry *FileEntry) bool {
+	newbase := a.spliter.ReplaceAllStringFunc(entry.base, func(w string) string {
+		return "_" + strings.ToLower(w)
+	})
+	newbase = strings.TrimLeft(newbase, "_")
+	entry.newpath = path.Join(entry.dir, newbase)
+	return true
+}
+
+type CamelCaseAction struct {
+	spliter *regexp.Regexp
+}
+
+func NewCamelCaseAction(splitstr string) *CamelCaseAction {
+	spliter := regexp.MustCompile(splitstr)
+	return &CamelCaseAction{spliter}
+}
+
+func (a *CamelCaseAction) Act(entry *FileEntry) bool {
+	substrings := a.spliter.Split(entry.base, -1)
+	for i, str := range substrings {
+		substrings[i] = strings.ToUpper(str[:1]) + str[1:]
+	}
+	entry.newpath = path.Join(entry.dir, strings.Join(substrings, ""))
+	return true
+}
+
 type RegExpReplaceAction struct {
 	Matcher *regexp.Regexp
 	Replace string
@@ -84,7 +121,7 @@ func NewRegExpFormatReplaceAction(matcher *regexp.Regexp, replaceFormat string) 
 
 func (s *RegExpFormatReplaceAction) Act(entry *FileEntry) bool {
 	if s.Matcher.MatchString(entry.base) {
-		format := fmt.Sprintf(s.ReplaceFormat, s.Seq.Next())
+		format := strings.Replace(s.ReplaceFormat, "%i", strconv.Itoa(int(s.Seq.Next())), -1)
 		newbase := s.Matcher.ReplaceAllString(entry.base, format)
 		entry.newpath = path.Join(entry.dir, newbase)
 		return true

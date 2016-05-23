@@ -31,8 +31,7 @@ func (w *ConsolePrinter) Run() {
 			// trim pwd paths
 			if strings.HasPrefix(entry.path, pwd) {
 				var oldpath = strings.TrimLeft(strings.Replace(entry.path, pwd, "", 1), "/")
-				var newpath = strings.TrimLeft(strings.Replace(entry.path, pwd, "", 1), "/")
-
+				var newpath = strings.TrimLeft(strings.Replace(entry.newpath, pwd, "", 1), "/")
 				fmt.Printf("./%s", oldpath)
 				if newpath != "" {
 					fmt.Printf(" -> ./%s", newpath)

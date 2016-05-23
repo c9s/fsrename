@@ -10,6 +10,14 @@ func NewFormatReplacer(search, replaceFormat string) *Actor {
 	return NewActor(NewStrFormatReplaceAction(search, replaceFormat))
 }
 
+func NewCamelCaseReplacer() *Actor {
+	return NewActor(NewCamelCaseAction("[-_]+"))
+}
+
+func NewUnderscoreReplacer() *Actor {
+	return NewActor(NewUnderscoreAction())
+}
+
 func NewRegExpReplacer(pattern, replace string) *Actor {
 	matcher := regexp.MustCompile(pattern)
 	return NewActor(NewRegExpReplaceAction(matcher, replace))

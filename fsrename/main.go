@@ -16,24 +16,27 @@ var dirOnlyOpt = flag.Bool("dir", false, "directory only")
 
 // replacement options
 var replaceOpt = flag.String("replace", "{nil}", "search")
-var replaceRegexpOpt = flag.String("replaceRegexp", "{nil}", "search")
+var rOpt = flag.String("r", "{nil}", "search")
+var replaceRegexpOpt = flag.String("replaceRegexp", "{nil}", "regular expression replace target")
+var rreOpt = flag.String("rre", "{nil}", "regular expression replace target")
+
 var withOpt = flag.String("with", "{nil}", "replacement")
+var wOpt = flag.String("w", "{nil}", "replacement")
 var withFormatOpt = flag.String("withFormat", "{nil}", "replacement format")
 
 // rule builders
 var trimPrefixOpt = flag.String("trimPrefix", "", "trim prefix")
 var trimSuffixOpt = flag.String("trimSuffix", "", "trim suffix")
+var camelOpt = flag.Bool("camel", false, "Convert substrings to camel cases")
+var underscoreOpt = flag.Bool("underscore", false, "Convert substrings to underscore cases")
 
 // runtime option
 var dryRunOpt = flag.Bool("dryrun", false, "dry run only")
 var orderOpt = flag.String("order", "", "order by")
 
 /*
-var numOfWorkersPtr = flag.Int("c", 2, "the number of concurrent rename workers. default = 2")
 var seqStart = flag.Int("seqstart", 0, "sequence number start with")
-var sequenceNumber int = 1
 */
-
 func main() {
 	pwd, err := os.Getwd()
 	if err != nil {
@@ -104,6 +107,17 @@ func main() {
 		}
 	}
 
+	// copy short option to long option
+	if *rOpt != "{nil}" {
+		*replaceOpt = *rOpt
+	}
+	if *rreOpt != "{nil}" {
+		*replaceRegexpOpt = *rreOpt
+	}
+	if *wOpt != "{nil}" {
+		*withOpt = *wOpt
+	}
+
 	if *trimPrefixOpt != "" {
 		*replaceRegexpOpt = "^" + regexp.QuoteMeta(*trimPrefixOpt)
 		*withOpt = ""
@@ -111,6 +125,14 @@ func main() {
 	if *trimSuffixOpt != "" {
 		*replaceRegexpOpt = regexp.QuoteMeta(*trimSuffixOpt) + "$"
 		*withOpt = ""
+	}
+
+	if *camelOpt == true {
+		chain = chain.Chain(fsrename.NewCamelCaseReplacer())
+		go chain.Run()
+	} else if *underscoreOpt == true {
+		chain = chain.Chain(fsrename.NewUnderscoreReplacer())
+		go chain.Run()
 	}
 
 	// string replace is enabled
