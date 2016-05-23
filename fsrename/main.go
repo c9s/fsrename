@@ -1,3 +1,123 @@
+// Copyright 2014-2016 Yo-An Lin. All rights reserved.
+// license that can be found in the LICENSE file.
+
+/*
+## Usage
+
+    fsrename [options] [path...]
+
+When `[path...]` is not given, "./" will be used as the default path for scanning files.
+
+
+
+## Options
+
+### Filter Options
+
+	-match
+
+		pre-filter the files and directories based on the given regular
+		pattern.
+
+	-contains
+
+		pre-filter the files and directories based on the given string needle.
+
+	-file, -f
+
+		only for files.
+
+	-dir, -d
+
+		only for directories.
+
+	-ext
+
+		find files with matched file extension.
+
+
+### Replacement Options
+
+Please note the replacement target only works for the basename of a path.
+-replace* and -with* should be combined together to replace the substrings.
+
+	-replace, -r
+
+		specify target substring with normal string matching.
+
+	-replaceRegexp, -rre
+
+		specify target substring with regular expression matching.
+
+	-with, -w
+
+		replacement for the target substring.
+
+	-withFormat
+
+		replacement with fmt.Sprintf format for the target substring.
+
+### Replace Rule Builder Options
+
+	-trimPrefix
+
+		trim filename prefix.
+
+	-trimSuffix
+
+		trim filename suffix (this option removes suffix even for filename
+		extensions).
+
+	-camel
+
+		converts dash/underscore separated filenames into camelcase filenames.
+
+	-underscore
+
+		converts camelcase filesnames into underscore separated filenames.
+
+### Common Options
+
+	-dryrun
+
+		dry run, don't rename, just preview the result.
+
+## Quick Examples
+
+
+Find files with extension `.php` and replace the substring from the filename.
+
+    fsrename -ext "php" -replace "some" -with "others" src/
+
+Replace `Stmt.go` with "_stmt.go" under the current directory:
+
+    fsrename -replace "Stmt.go" -with "_stmt.go"
+
+Replace `Stmt.go` with "_stmt.go" under directory `src/c6`:
+
+    fsrename -replace "Stmt.go" -with "_stmt.go" src/c6
+
+Replace `foo` with `bar` from files contains `prefix_`
+
+    fsrename -file -contains prefix_ -replace foo -with bar test
+
+Or use `-match` to pre-filter the files with regular expression
+
+    fsrename -file -match "[a-z]+" -replace foo -with bar test
+
+Use regular expression without escaping:
+
+    fsrename -replaceRegexp "_[a-z]*.go" -with ".go" src/c6
+
+    fsrename -file -replaceRegexp "_[a-z]*.go" -with ".go" src/c6
+
+    fsrename -file -ext go -replaceRegexp "[a-z]*" -with "123" src/c6
+
+    fsrename -dir -replace "_xxx" -with "_aaa" src/c6
+
+    fsrename -replace "_xxx" -with "_aaa" -dryrun  src/c6
+
+*/
 package main
 
 import "flag"
