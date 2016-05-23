@@ -16,8 +16,8 @@ var fileOnlyOpt = flag.Bool("file", false, "file only")
 var dirOnlyOpt = flag.Bool("dir", false, "directory only")
 
 // replacement options
-var replaceOpt = flag.String("replace", "{search}", "search")
-var replaceRegexpOpt = flag.String("replaceRegexp", "{search}", "search")
+var replaceOpt = flag.String("replace", "", "search")
+var replaceRegexpOpt = flag.String("replaceRegexp", "", "search")
 var withOpt = flag.String("with", "", "replacement")
 var withFormatOpt = flag.String("withFormat", "", "replacement format")
 
@@ -97,18 +97,29 @@ func main() {
 	}
 
 	// string replace is enabled
-	if replaceOpt != nil || replaceRegexpOpt != nil {
+	if *replaceOpt != "" || *replaceRegexpOpt != "" {
 		if *withOpt == "" && *withFormatOpt == "" {
 			log.Fatalln("replacement option is required. use -with 'replacement' or -withFormat 'format'.")
 		}
 
-		if *withOpt != "" {
-			chain = chain.Chain(fsrename.NewStrReplacer(*replaceOpt, *withOpt, -1))
-			go chain.Run()
-		} else if *withFormatOpt != "" {
-			chain = chain.Chain(fsrename.NewFormatReplacer(*replaceOpt, *withFormatOpt))
-			go chain.Run()
+		if *replaceRegexpOpt != "" {
+			if *withOpt != "" {
+				chain = chain.Chain(fsrename.NewRegExpReplacer(*replaceRegexpOpt, *withOpt))
+				go chain.Run()
+			} else if *withFormatOpt != "" {
+				chain = chain.Chain(fsrename.NewRegExpFormatReplacer(*replaceRegexpOpt, *withFormatOpt))
+				go chain.Run()
+			}
+		} else {
+			if *withOpt != "" {
+				chain = chain.Chain(fsrename.NewStrReplacer(*replaceOpt, *withOpt, -1))
+				go chain.Run()
+			} else if *withFormatOpt != "" {
+				chain = chain.Chain(fsrename.NewFormatReplacer(*replaceOpt, *withFormatOpt))
+				go chain.Run()
+			}
 		}
+
 	}
 
 	if *dryRunOpt == false {
