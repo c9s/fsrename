@@ -175,6 +175,7 @@ func main() {
 	}
 	input <- nil
 
+	// TODO: use condvar instead receiving the paths...
 	out := chain.Output()
 	for {
 		entry := <-out
