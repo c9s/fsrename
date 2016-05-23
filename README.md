@@ -1,5 +1,6 @@
-FSRename
-======================
+FSRename - Fast & Simple Rename
+================================
+
 A simple, powerful rename tool supports complex filtering
 
 fsrename separates the pattern option, therefore you can specify the pattern without typeing these character escapes.
