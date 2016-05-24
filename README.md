@@ -46,35 +46,26 @@ You can create a link to the package under your GOPATH to create an doc alias
 
 `-contains` pre-filter the files and directories based on the given string needle.
 
-`-file` only for files.
+`-f`,`-file` only for files.
 
-`-f` an alias of `-file`
-
-`-dir` only for directories.
-
-`-d` an alias of `-d`
+`-d`, `-dir` only for directories.
 
 `-ext` find files with matched file extension.
-
 
 ### REPLACEMENT OPTIONS
 
 Please note the replacement target only works for the basename of a path.
 `-replace*` and `-with*` should be combined together to replace the substrings.
 
-`-replace` specify target substring with normal string matching.
-`-r` alias of `-replace`
+`-r`, `-replace` specify target substring with normal string matching.
 
 
-`-replace-regexp` specify target substring with regular expression matching.
-`-rr` alias of `-replace-regexp`
+`-rr`, `-replace-re`, `-replace-regexp` specify target substring with regular expression matching.
 
 
-`-with` replacement for the target substring.
-`-w` alias of `-with`
+`-w`, `-with` replacement for the target substring.
 
-
-`-withFormat` replacement with fmt.Sprintf format for the target substring.
+`-wf`, `-with-format` replacement with fmt.Sprintf format for the target substring.
 
 ### REPLACE RULE BUILDER OPTIONS
 

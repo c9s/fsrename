@@ -57,7 +57,7 @@ OPTIONS
 
 			replacement for the target substring.
 
-		-withFormat
+		-with-format
 
 			replacement with fmt.Sprintf format for the target substring.
 
@@ -152,7 +152,8 @@ var rrOpt = flag.String("rr", "{nil}", "regular expression replace target")
 
 var withOpt = flag.String("with", "{nil}", "replacement")
 var wOpt = flag.String("w", "{nil}", "replacement")
-var withFormatOpt = flag.String("withFormat", "{nil}", "replacement format")
+var withFormatOpt = flag.String("with-format", "{nil}", "replacement format")
+var wfOpt = flag.String("wf", "{nil}", "replacement format")
 
 // rule builders
 var trimPrefixOpt = flag.String("trim-prefix", "", "trim prefix")
@@ -202,6 +203,9 @@ func main() {
 
 	if *wOpt != "{nil}" {
 		*withOpt = *wOpt
+	}
+	if *wfOpt != "{nil}" {
+		*withFormatOpt = *wfOpt
 	}
 
 	if *fOpt == true {
@@ -266,7 +270,7 @@ func main() {
 	// string replace is enabled
 	if *replaceOpt != "{nil}" || *replaceRegexpOpt != "{nil}" {
 		if *withOpt == "{nil}" && *withFormatOpt == "{nil}" {
-			log.Fatalln("replacement option is required. use -with 'replacement' or -withFormat 'format'.")
+			log.Fatalln("replacement option is required. use -with 'replacement' or -with-format 'format'.")
 		}
 
 		if *replaceRegexpOpt != "{nil}" {
