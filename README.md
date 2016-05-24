@@ -128,6 +128,36 @@ Use regular expression without escaping:
     fsrename -replace "_xxx" -with "_aaa" -dryrun  src/c6
 
 
+## API
+
+Build your own file stream workers.
+
+The fsrename API is pretty straight forward and simple, you can create your own
+filters, actors in just few lines:
+
+```go
+input := fsrename.NewFileStream()
+scanner := fsrename.NewGlobScanner()
+scanner.SetInput(input)
+scanner.Start()
+chain := scanner.
+    Chain(fsrename.NewFileFilter()).
+    Chain(fsrename.NewReverseSorter())
+
+// start sending file entries into the input stream
+input <- fsrename.MustNewFileEntry("tests")
+
+// send EOS (end of stream)
+input <- nil
+
+
+// get entries from output
+output := chain.Output()
+entry := <-output
+....
+```
+
+
 ## Roadmap
 
 v2.1

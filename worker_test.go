@@ -75,7 +75,9 @@ func TestSimpleReverseSorter(t *testing.T) {
 	scanner := NewGlobScanner()
 	scanner.SetInput(input)
 	scanner.Start()
-	chain := scanner.Chain(&FileFilter{NewBaseWorker()}).Chain(&ReverseSorter{NewBaseWorker()})
+	chain := scanner.
+		Chain(NewFileFilter()).
+		Chain(NewReverseSorter())
 
 	input <- MustNewFileEntry("tests")
 	input <- nil
