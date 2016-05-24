@@ -24,7 +24,7 @@ func (w *DirFilter) Run() {
 				w.emitEnd()
 				return
 			}
-			if entry.info.IsDir() {
+			if entry.info.Mode().IsDir() {
 				w.output <- entry
 			}
 		}

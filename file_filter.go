@@ -24,7 +24,7 @@ func (f *FileFilter) Run() {
 				f.emitEnd()
 				return
 			}
-			if !entry.info.IsDir() {
+			if entry.info.Mode().IsRegular() {
 				f.output <- entry
 			}
 		}
