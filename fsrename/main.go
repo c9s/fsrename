@@ -49,7 +49,7 @@ OPTIONS
 
 			specify target substring with normal string matching.
 
-		-replaceRegexp, -rre
+		-replace-regexp, -rr
 
 			specify target substring with regular expression matching.
 
@@ -63,11 +63,11 @@ OPTIONS
 
 	REPLACE RULE BUILDER OPTIONS
 
-	-trimPrefix
+	-trim-prefix
 
 		trim filename prefix.
 
-	-trimSuffix
+	-trim-suffix
 
 		trim filename suffix (this option removes suffix even for filename
 		extensions).
@@ -110,11 +110,11 @@ OPTIONS
 
 	Use regular expression without escaping:
 
-		fsrename -replaceRegexp "_[a-z]*.go" -with ".go" src/c6
+		fsrename -replace-regexp "_[a-z]*.go" -with ".go" src/c6
 
-		fsrename -file -replaceRegexp "_[a-z]*.go" -with ".go" src/c6
+		fsrename -file -replace-regexp "_[a-z]*.go" -with ".go" src/c6
 
-		fsrename -file -ext go -replaceRegexp "[a-z]*" -with "123" src/c6
+		fsrename -file -ext go -replace-regexp "[a-z]*" -with "123" src/c6
 
 		fsrename -dir -replace "_xxx" -with "_aaa" src/c6
 
@@ -146,16 +146,16 @@ var changelogOpt = flag.String("changelog", "", "the changelog file")
 // replacement options
 var replaceOpt = flag.String("replace", "{nil}", "search")
 var rOpt = flag.String("r", "{nil}", "search")
-var replaceRegexpOpt = flag.String("replaceRegexp", "{nil}", "regular expression replace target")
-var rreOpt = flag.String("rre", "{nil}", "regular expression replace target")
+var replaceRegexpOpt = flag.String("replace-regexp", "{nil}", "regular expression replace target")
+var rrOpt = flag.String("rr", "{nil}", "regular expression replace target")
 
 var withOpt = flag.String("with", "{nil}", "replacement")
 var wOpt = flag.String("w", "{nil}", "replacement")
 var withFormatOpt = flag.String("withFormat", "{nil}", "replacement format")
 
 // rule builders
-var trimPrefixOpt = flag.String("trimPrefix", "", "trim prefix")
-var trimSuffixOpt = flag.String("trimSuffix", "", "trim suffix")
+var trimPrefixOpt = flag.String("trim-prefix", "", "trim prefix")
+var trimSuffixOpt = flag.String("trim-suffix", "", "trim suffix")
 var camelOpt = flag.Bool("camel", false, "Convert substrings to camel cases")
 var underscoreOpt = flag.Bool("underscore", false, "Convert substrings to underscore cases")
 
@@ -193,8 +193,8 @@ func main() {
 	if *rOpt != "{nil}" {
 		*replaceOpt = *rOpt
 	}
-	if *rreOpt != "{nil}" {
-		*replaceRegexpOpt = *rreOpt
+	if *rrOpt != "{nil}" {
+		*replaceRegexpOpt = *rrOpt
 	}
 	if *wOpt != "{nil}" {
 		*withOpt = *wOpt

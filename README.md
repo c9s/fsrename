@@ -66,8 +66,8 @@ Please note the replacement target only works for the basename of a path.
 `-r` alias of `-replace`
 
 
-`-replaceRegexp` specify target substring with regular expression matching.
-`-rre` alias of `-replaceRegexp`
+`-replace-regexp` specify target substring with regular expression matching.
+`-rr` alias of `-replace-regexp`
 
 
 `-with` replacement for the target substring.
@@ -78,9 +78,9 @@ Please note the replacement target only works for the basename of a path.
 
 ### REPLACE RULE BUILDER OPTIONS
 
-`-trimPrefix` trim filename prefix.
+`-trim-prefix` trim filename prefix.
 
-`-trimSuffix` trim filename suffix (this option removes suffix even for filename extensions).
+`-trim-suffix` trim filename suffix (this option removes suffix even for filename extensions).
 
 `-camel` converts dash/underscore separated filenames into camelcase filenames.
 
@@ -119,14 +119,14 @@ Or use `-match` to pre-filter the files with regular expression
 
 Use regular expression without escaping:
 
-    fsrename -replaceRegexp "_[a-z]*.go" -with ".go" src/c6
+    fsrename -replace-regexp "_[a-z]*.go" -with ".go" src/c6
 
-    # -rre is a shorthand of -replaceRegexp
+    # -rre is a shorthand of -replace-regexp
     fsrename -rre "_[a-z]*.go" -with ".go" src/c6
 
-    fsrename -file -replaceRegexp "_[a-z]*.go" -with ".go" src/c6
+    fsrename -file -replace-regexp "_[a-z]*.go" -with ".go" src/c6
 
-    fsrename -file -ext go -replaceRegexp "[a-z]*" -with "123" src/c6
+    fsrename -file -ext go -replace-regexp "[a-z]*" -with "123" src/c6
 
     fsrename -dir -replace "_xxx" -with "_aaa" src/c6
 
