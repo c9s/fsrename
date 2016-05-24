@@ -13,6 +13,12 @@ camelcase conversion, underscore conversion are all supported.
 
 > This tool is different from `gorename`, `gorename` is for refactoring your code, rename variables.
 
+
+SYNOPSIS
+--------------
+
+    fsrename -file -match "[a-z]+" -rr "foo_+" -with bar test
+
 INSTALL
 --------------
 
