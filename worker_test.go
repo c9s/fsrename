@@ -36,12 +36,12 @@ func TestFilterWorkerEmtpy(t *testing.T) {
 }
 
 func TestSimpleRegExpOnPHPFiles(t *testing.T) {
+	input := NewFileStream()
 	scanner := NewGlobScanner()
+	scanner.SetInput(input)
 	scanner.Start()
 	chain := scanner.Chain(NewFileFilter()).Chain(NewRegExpFilterWithPattern("\\.php$"))
 
-	input := NewFileStream()
-	scanner.SetInput(input)
 	input <- MustNewFileEntry("tests/php_files")
 	input <- nil
 
@@ -52,15 +52,14 @@ func TestSimpleRegExpOnPHPFiles(t *testing.T) {
 }
 
 func TestSimpleFilePipe(t *testing.T) {
+	input := NewFileStream()
 	scanner := NewGlobScanner()
+	scanner.SetInput(input)
 	scanner.Start()
 
 	filter := scanner.Chain(&FileFilter{
 		&BaseWorker{stop: make(CondVar, 1)},
 	})
-
-	input := NewFileStream()
-	scanner.SetInput(input)
 
 	input <- MustNewFileEntry("tests/scanner")
 	input <- nil
