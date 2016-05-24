@@ -11,6 +11,7 @@ pattern without typing these escaping characters and the slashes.
 pre-filtering, extension filtering, prefix trimming, suffix trimming ,
 camelcase conversion, underscore conversion are all supported.
 
+> This tool is different from `gorename`, `gorename` is for refactoring your code, rename variables.
 
 INSTALL
 --------------
