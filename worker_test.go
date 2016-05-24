@@ -38,14 +38,14 @@ func TestFilterWorkerEmtpy(t *testing.T) {
 func TestSimpleRegExpOnPHPFiles(t *testing.T) {
 	scanner := NewGlobScanner()
 	scanner.Start()
-	filter := scanner.Chain(NewFileFilter())
-	filter2 := filter.Chain(NewRegExpFilterWithPattern("\\.php$"))
+	chain := scanner.Chain(NewFileFilter()).Chain(NewRegExpFilterWithPattern("\\.php$"))
 
 	input := NewFileStream()
 	scanner.SetInput(input)
 	input <- MustNewFileEntry("tests/php_files")
 	input <- nil
-	output := filter2.Output()
+
+	output := chain.Output()
 	assert.NotNil(t, output)
 	entries := readEntries(t, output)
 	assert.Equal(t, 2, len(entries))
@@ -71,18 +71,16 @@ func TestSimpleFilePipe(t *testing.T) {
 }
 
 func TestSimpleReverseSorter(t *testing.T) {
-	scanner := NewGlobScanner()
-	scanner.Start()
-	filter := scanner.Chain(&FileFilter{NewBaseWorker()})
-	sorter := filter.Chain(&ReverseSorter{NewBaseWorker()})
-
 	input := NewFileStream()
+	scanner := NewGlobScanner()
 	scanner.SetInput(input)
+	scanner.Start()
+	chain := scanner.Chain(&FileFilter{NewBaseWorker()}).Chain(&ReverseSorter{NewBaseWorker()})
 
 	input <- MustNewFileEntry("tests")
 	input <- nil
 
-	output := sorter.Output()
+	output := chain.Output()
 	assert.NotNil(t, output)
 	readEntries(t, output)
 }
