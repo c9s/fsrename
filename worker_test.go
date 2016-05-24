@@ -15,7 +15,7 @@ func TestScanner(t *testing.T) {
 	assert.NotNil(t, output)
 
 	entries := readEntries(t, output)
-	assert.Equal(t, 7, len(entries))
+	assert.Equal(t, 6, len(entries))
 }
 
 func TestFilterWorkerEmtpy(t *testing.T) {
