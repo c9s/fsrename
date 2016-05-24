@@ -57,11 +57,15 @@ You can create a link to the package under your GOPATH to create an doc alias
 Please note the replacement target only works for the basename of a path.
 `-replace*` and `-with*` should be combined together to replace the substrings.
 
+#### Specifying replace target
+
 `-r`, `-replace` specify target substring with normal string matching.
 
 
 `-rr`, `-replace-re`, `-replace-regexp` specify target substring with regular expression matching.
 
+
+#### Specifying replacement
 
 `-w`, `-with` replacement for the target substring.
 
