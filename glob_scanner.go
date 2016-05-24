@@ -33,6 +33,10 @@ func (s *GlobScanner) Run() {
 			}
 			for _, match := range matches {
 				var err = filepath.Walk(match, func(path string, info os.FileInfo, err error) error {
+					// ignore the parent path
+					if path == entry.path {
+						return err
+					}
 					base := filepath.Base(path)
 					if base == ".svn" || base == ".git" || base == ".hg" {
 						return filepath.SkipDir
