@@ -6,7 +6,7 @@ FSRename v2 - Fast & Simple Rename
 A simple, powerful rename tool supports complex filtering, written in GO.
 
 `fsrename` separates the pattern/replace options, therefore you can specify the
-pattern without typing these escaping characters.
+pattern without typing these escaping characters and the slashes.
 
 pre-filtering, extension filtering, prefix trimming, suffix trimming ,
 camelcase conversion, underscore conversion are all supported.
@@ -42,15 +42,15 @@ You can create a link to the package under your GOPATH to create an doc alias
 
 ### FILTER OPTIONS
 
-`-match` pre-filter the files and directories based on the given regular pattern.
+`-match [regexp pattern]` pre-filter the files and directories based on the given regular pattern.
 
-`-contains` pre-filter the files and directories based on the given string needle.
+`-contains [string]` pre-filter the files and directories based on the given string needle.
 
 `-f`,`-file` only for files.
 
 `-d`, `-dir` only for directories.
 
-`-ext` find files with matched file extension.
+`-ext [extension name]` find files with matched file extension.
 
 ### REPLACEMENT OPTIONS
 
@@ -59,23 +59,21 @@ Please note the replacement target only works for the basename of a path.
 
 #### Specifying replace target
 
-`-r`, `-replace` specify target substring with normal string matching.
+`-r [search string]`, `-replace [search string]` specify target substring with normal string matching.
 
-
-`-rr`, `-replace-re`, `-replace-regexp` specify target substring with regular expression matching.
-
+`-rr [regexp pattern]`, `-replace-re [regexp pattern]`, `-replace-regexp [regexp pattern]` specify target substring with regular expression matching.
 
 #### Specifying replacement
 
-`-w`, `-with` replacement for the target substring.
+`-w [string]`, `-with [string]` replacement for the target substring.
 
-`-wf`, `-with-format` replacement with fmt.Sprintf format for the target substring.
+`-wf [format string]`, `-with-format [format string]` replacement with fmt.Sprintf format for the target substring.
 
 ### REPLACE RULE BUILDER OPTIONS
 
-`-trim-prefix` trim filename prefix.
+`-trim-prefix [prefix]` trim filename prefix.
 
-`-trim-suffix` trim filename suffix (this option removes suffix even for filename extensions).
+`-trim-suffix [suffix]` trim filename suffix (this option removes suffix even for filename extensions).
 
 `-camel` converts dash/underscore separated filenames into camelcase filenames.
 
@@ -84,6 +82,8 @@ Please note the replacement target only works for the basename of a path.
 ### Common Options
 
 `-dryrun`  dry run, don't rename, just preview the result.
+
+`-changelog [changelog file]` records the rename actions in CSV format file.
 
 
 
