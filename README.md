@@ -37,8 +37,8 @@ To see the documentation in console:
 
 You can create a link to the package under your GOPATH to create an doc alias
 
-    P=$(echo $GOPATH|cut -d: -f1)
-    ln -s $P/src/github.com/c9s/fsrename/fsrename $P/src/fsrename
+    ln -s $(go list -f "{{.Dir}}" github.com/c9s/fsrename/fsrename) \
+        $(go list -f "{{.Root}}" github.com/c9s/fsrename/fsrename)/src/fsrename
 
     # see the document
     go doc fsrename
