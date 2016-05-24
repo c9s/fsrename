@@ -15,6 +15,9 @@ func NewRegExpFilterWithPattern(pattern string) *RegExpFilter {
 	matcher := regexp.MustCompile(pattern)
 	return &RegExpFilter{NewBaseWorker(), matcher}
 }
+func (w *RegExpFilter) Start() {
+	go w.Run()
+}
 
 func (w *RegExpFilter) Run() {
 	for {

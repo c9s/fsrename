@@ -8,6 +8,9 @@ type Actor struct {
 func NewActor(a Action) *Actor {
 	return &Actor{NewBaseWorker(), a}
 }
+func (a *Actor) Start() {
+	go a.Run()
+}
 
 func (a *Actor) Run() {
 	for {

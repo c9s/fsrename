@@ -8,6 +8,10 @@ func NewDirFilter() *DirFilter {
 	return &DirFilter{NewBaseWorker()}
 }
 
+func (w *DirFilter) Start() {
+	go w.Run()
+}
+
 func (w *DirFilter) Run() {
 	for {
 		select {

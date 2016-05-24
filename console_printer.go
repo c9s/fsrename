@@ -12,6 +12,10 @@ func NewConsolePrinter() *ConsolePrinter {
 	return &ConsolePrinter{NewBaseWorker()}
 }
 
+func (w *ConsolePrinter) Start() {
+	go w.Run()
+}
+
 func (w *ConsolePrinter) Run() {
 	pwd, err := os.Getwd()
 	if err != nil {

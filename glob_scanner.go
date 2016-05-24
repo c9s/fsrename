@@ -11,16 +11,20 @@ func NewGlobScanner() *GlobScanner {
 	return &GlobScanner{NewBaseWorker()}
 }
 
-func (self *GlobScanner) Run() {
+func (s *GlobScanner) Start() {
+	go s.Run()
+}
+
+func (s *GlobScanner) Run() {
 	for {
 		select {
-		case <-self.stop:
+		case <-s.stop:
 			return
 			break
-		case entry := <-self.input:
+		case entry := <-s.input:
 			// end of data
 			if entry == nil {
-				self.emitEnd()
+				s.emitEnd()
 				return
 			}
 			matches, err := filepath.Glob(entry.path)
@@ -36,7 +40,7 @@ func (self *GlobScanner) Run() {
 					if err != nil {
 						panic(err)
 					}
-					self.output <- NewFileEntryWithInfo(path, info)
+					s.output <- NewFileEntryWithInfo(path, info)
 					return err
 				})
 				if err != nil {

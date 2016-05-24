@@ -8,20 +8,24 @@ func NewFileFilter() *FileFilter {
 	return &FileFilter{NewBaseWorker()}
 }
 
-func (w *FileFilter) Run() {
+func (f *FileFilter) Start() {
+	go f.Run()
+}
+
+func (f *FileFilter) Run() {
 	for {
 		select {
-		case <-w.stop:
+		case <-f.stop:
 			return
 			break
-		case entry := <-w.input:
+		case entry := <-f.input:
 			// end of data
 			if entry == nil {
-				w.emitEnd()
+				f.emitEnd()
 				return
 			}
 			if !entry.info.IsDir() {
-				w.output <- entry
+				f.output <- entry
 			}
 		}
 	}

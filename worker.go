@@ -21,7 +21,9 @@ type Worker interface {
 	// Send stop signal to the listener go routine
 	Stop()
 
-	// Start listening the input channel
+	Start()
+
+	// Start listening the input channel in the background
 	Run()
 
 	// Append a next worker to the next worker list
@@ -95,6 +97,7 @@ func (w *BaseWorker) Chain(nextWorker Worker) Worker {
 		nextWorker.SetOutput(NewFileStream())
 	}
 	w.nextWorkers = append(w.nextWorkers, nextWorker)
+	nextWorker.Start()
 	return nextWorker
 }
 

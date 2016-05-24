@@ -11,6 +11,10 @@ func NewStrContainsFilter(search string) *StrContainsFilter {
 	return &StrContainsFilter{NewBaseWorker(), search}
 }
 
+func (w *StrContainsFilter) Start() {
+	go w.Run()
+}
+
 func (w *StrContainsFilter) Run() {
 	for {
 		select {

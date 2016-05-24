@@ -57,6 +57,10 @@ func (s *ReverseSorter) Run() {
 	s.emitEnd()
 }
 
+func (s *ReverseSorter) Start() {
+	go s.Run()
+}
+
 type MtimeSorter struct {
 	*BaseWorker
 }
@@ -73,12 +77,20 @@ func (s *MtimeSorter) Run() {
 	s.emitEnd()
 }
 
+func (s *MtimeSorter) Start() {
+	go s.Run()
+}
+
 type MtimeReverseSorter struct {
 	*BaseWorker
 }
 
 func NewMtimeReverseSorter() *MtimeReverseSorter {
 	return &MtimeReverseSorter{NewBaseWorker()}
+}
+
+func (s *MtimeReverseSorter) Start() {
+	go s.Run()
 }
 
 func (s *MtimeReverseSorter) Run() {
@@ -97,6 +109,10 @@ func NewSizeSorter() *SizeSorter {
 	return &SizeSorter{NewBaseWorker()}
 }
 
+func (s *SizeSorter) Start() {
+	go s.Run()
+}
+
 func (s *SizeSorter) Run() {
 	var entries = s.BufferEntries()
 	sorter := SizeSort{entries}
@@ -111,6 +127,10 @@ type SizeReverseSorter struct {
 
 func NewSizeReverseSorter() *SizeReverseSorter {
 	return &SizeReverseSorter{NewBaseWorker()}
+}
+
+func (s *SizeReverseSorter) Start() {
+	go s.Run()
 }
 
 func (s *SizeReverseSorter) Run() {

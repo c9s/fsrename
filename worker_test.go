@@ -7,9 +7,9 @@ func TestScanner(t *testing.T) {
 	input := NewFileStream()
 	output := NewFileStream()
 	worker := NewGlobScanner()
+	worker.Start()
 	worker.SetInput(input)
 	worker.SetOutput(output)
-	go worker.Run()
 	input <- MustNewFileEntry("tests/scanner")
 	input <- nil
 	assert.NotNil(t, output)
@@ -24,7 +24,7 @@ func TestFilterWorkerEmtpy(t *testing.T) {
 	worker := NewFileFilter()
 	worker.SetInput(input)
 	worker.SetOutput(output)
-	go worker.Run()
+	worker.Start()
 
 	e, err := NewFileEntry("tests/autoload.php")
 	assert.Nil(t, err)
@@ -37,12 +37,9 @@ func TestFilterWorkerEmtpy(t *testing.T) {
 
 func TestSimpleRegExpOnPHPFiles(t *testing.T) {
 	scanner := NewGlobScanner()
+	scanner.Start()
 	filter := scanner.Chain(NewFileFilter())
 	filter2 := filter.Chain(NewRegExpFilterWithPattern("\\.php$"))
-
-	go scanner.Run()
-	go filter.Run()
-	go filter2.Run()
 
 	input := NewFileStream()
 	scanner.SetInput(input)
@@ -56,12 +53,11 @@ func TestSimpleRegExpOnPHPFiles(t *testing.T) {
 
 func TestSimpleFilePipe(t *testing.T) {
 	scanner := NewGlobScanner()
+	scanner.Start()
+
 	filter := scanner.Chain(&FileFilter{
 		&BaseWorker{stop: make(CondVar, 1)},
 	})
-
-	go scanner.Run()
-	go filter.Run()
 
 	input := NewFileStream()
 	scanner.SetInput(input)
@@ -76,11 +72,9 @@ func TestSimpleFilePipe(t *testing.T) {
 
 func TestSimpleReverseSorter(t *testing.T) {
 	scanner := NewGlobScanner()
+	scanner.Start()
 	filter := scanner.Chain(&FileFilter{NewBaseWorker()})
 	sorter := filter.Chain(&ReverseSorter{NewBaseWorker()})
-	go scanner.Run()
-	go filter.Run()
-	go sorter.Run()
 
 	input := NewFileStream()
 	scanner.SetInput(input)

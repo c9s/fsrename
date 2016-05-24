@@ -122,11 +122,14 @@ OPTIONS
 */
 package main
 
-import "flag"
-import "os"
-import "fmt"
-import "log"
-import "regexp"
+import (
+	"flag"
+	"fmt"
+	"log"
+	"os"
+	"regexp"
+)
+
 import "github.com/c9s/fsrename"
 
 // filter options
@@ -137,6 +140,8 @@ var fileOnlyOpt = flag.Bool("file", false, "file only")
 var fOpt = flag.Bool("f", false, "an alias of file only")
 var dirOnlyOpt = flag.Bool("dir", false, "directory only")
 var dOpt = flag.Bool("d", false, "an alias of dir only")
+
+var changelogOpt = flag.String("changelog", "", "the changelog file")
 
 // replacement options
 var replaceOpt = flag.String("replace", "{nil}", "search")
@@ -204,47 +209,37 @@ func main() {
 
 	if *fileOnlyOpt == true {
 		chain = chain.Chain(fsrename.NewFileFilter())
-		go chain.Run()
 	}
 	if *dirOnlyOpt == true {
 		chain = chain.Chain(fsrename.NewDirFilter())
-		go chain.Run()
 	}
 	if *extOpt != "" {
 		chain = chain.Chain(fsrename.NewFileExtFilter(*extOpt))
-		go chain.Run()
 	}
 
 	if *matchOpt != "" {
 		chain = chain.Chain(fsrename.NewRegExpFilterWithPattern(*matchOpt))
-		go chain.Run()
 	}
 	if *containsOpt != "" {
 		chain = chain.Chain(fsrename.NewStrContainsFilter(*containsOpt))
-		go chain.Run()
 	}
 
 	if *fileOnlyOpt && *orderOpt != "" {
 		switch *orderOpt {
 		case "reverse":
 			chain = chain.Chain(fsrename.NewReverseSorter())
-			go chain.Run()
 			break
 		case "mtime":
 			chain = chain.Chain(fsrename.NewMtimeSorter())
-			go chain.Run()
 			break
 		case "reverse-mtime":
 			chain = chain.Chain(fsrename.NewMtimeReverseSorter())
-			go chain.Run()
 			break
 		case "size":
 			chain = chain.Chain(fsrename.NewSizeSorter())
-			go chain.Run()
 			break
 		case "reverse-size":
 			chain = chain.Chain(fsrename.NewSizeReverseSorter())
-			go chain.Run()
 			break
 		}
 	}
@@ -260,10 +255,8 @@ func main() {
 
 	if *camelOpt == true {
 		chain = chain.Chain(fsrename.NewCamelCaseReplacer())
-		go chain.Run()
 	} else if *underscoreOpt == true {
 		chain = chain.Chain(fsrename.NewUnderscoreReplacer())
-		go chain.Run()
 	}
 
 	// string replace is enabled
@@ -275,18 +268,14 @@ func main() {
 		if *replaceRegexpOpt != "{nil}" {
 			if *withOpt != "{nil}" {
 				chain = chain.Chain(fsrename.NewRegExpReplacer(*replaceRegexpOpt, *withOpt))
-				go chain.Run()
 			} else if *withFormatOpt != "{nil}" {
 				chain = chain.Chain(fsrename.NewRegExpFormatReplacer(*replaceRegexpOpt, *withFormatOpt))
-				go chain.Run()
 			}
 		} else {
 			if *withOpt != "{nil}" {
 				chain = chain.Chain(fsrename.NewStrReplacer(*replaceOpt, *withOpt, -1))
-				go chain.Run()
 			} else if *withFormatOpt != "{nil}" {
 				chain = chain.Chain(fsrename.NewFormatReplacer(*replaceOpt, *withFormatOpt))
-				go chain.Run()
 			}
 		}
 
@@ -294,11 +283,13 @@ func main() {
 
 	if *dryRunOpt == false {
 		chain = chain.Chain(fsrename.NewRenamer())
-		go chain.Run()
+	}
+
+	if *changelogOpt != "" {
+		chain = chain.Chain(fsrename.NewChangeLogWriter())
 	}
 
 	chain = chain.Chain(fsrename.NewConsolePrinter())
-	go chain.Run()
 
 	// send paths
 	for _, path := range pathArgs {
