@@ -7,9 +7,10 @@ func TestScanner(t *testing.T) {
 	input := NewFileStream()
 	output := NewFileStream()
 	worker := NewGlobScanner()
-	worker.Start()
 	worker.SetInput(input)
 	worker.SetOutput(output)
+	worker.Start()
+
 	input <- MustNewFileEntry("tests/scanner")
 	input <- nil
 	assert.NotNil(t, output)
