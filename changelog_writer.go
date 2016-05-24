@@ -42,6 +42,7 @@ func (w *ChangeLogWriter) Run() {
 			if err := writer.Write([]string{entry.path, entry.newpath, entry.message}); err != nil {
 				log.Fatalln("Error writing files to csv:", err)
 			}
+			w.output <- entry
 		}
 	}
 	if err := writer.Error(); err != nil {
