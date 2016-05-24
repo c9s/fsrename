@@ -6,7 +6,7 @@ import "os"
 type Rename struct{}
 
 func (r *Rename) Act(entry *FileEntry) bool {
-	if entry.newpath == "" {
+	if entry.newpath == "" || entry.newpath == entry.path {
 		entry.message = "unchanged"
 		return false
 	}
