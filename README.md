@@ -136,6 +136,9 @@ The fsrename API is pretty straight forward and simple, you can create your own
 filters, actors in just few lines:
 
 ```go
+import "github.com/c9s/fsrename"
+
+
 input := fsrename.NewFileStream()
 scanner := fsrename.NewGlobScanner()
 scanner.SetInput(input)
