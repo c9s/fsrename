@@ -147,6 +147,7 @@ var changelogOpt = flag.String("changelog", "", "the changelog file")
 var replaceOpt = flag.String("replace", "{nil}", "search")
 var rOpt = flag.String("r", "{nil}", "search")
 var replaceRegexpOpt = flag.String("replace-regexp", "{nil}", "regular expression replace target")
+var replaceReOpt = flag.String("replace-re", "{nil}", "regular expression replace target")
 var rrOpt = flag.String("rr", "{nil}", "regular expression replace target")
 
 var withOpt = flag.String("with", "{nil}", "replacement")
@@ -195,7 +196,10 @@ func main() {
 	}
 	if *rrOpt != "{nil}" {
 		*replaceRegexpOpt = *rrOpt
+	} else if *replaceReOpt != "{nil}" {
+		*replaceRegexpOpt = *replaceReOpt
 	}
+
 	if *wOpt != "{nil}" {
 		*withOpt = *wOpt
 	}
