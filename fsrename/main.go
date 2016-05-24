@@ -286,7 +286,7 @@ func main() {
 	}
 
 	if *changelogOpt != "" {
-		chain = chain.Chain(fsrename.NewChangeLogWriter())
+		chain = chain.Chain(fsrename.NewChangeLogWriter(*changelogOpt))
 	}
 
 	chain = chain.Chain(fsrename.NewConsolePrinter())
