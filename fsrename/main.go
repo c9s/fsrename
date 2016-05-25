@@ -18,12 +18,12 @@ OPTIONS
 
 	FILTER OPTIONS
 
-	-match
+	-match [regexp]
 
 		pre-filter the files and directories based on the given regular
 		pattern.
 
-	-contains
+	-contains [string]
 
 		pre-filter the files and directories based on the given string needle.
 
@@ -45,29 +45,29 @@ OPTIONS
 	Please note the replacement target only works for the basename of a path.
 	-replace* and -with* should be combined together to replace the substrings.
 
-		-replace, -r
+		-replace [search], -r [search]
 
 			specify target substring with normal string matching.
 
-		-replace-regexp, -rr
+		-replace-regexp [regexp], -rr [regexp]
 
 			specify target substring with regular expression matching.
 
-		-with, -w
+		-with [string], -w [string]
 
 			replacement for the target substring.
 
-		-with-format
+		-with-format, -wf [format string]
 
 			replacement with fmt.Sprintf format for the target substring.
 
 	REPLACE RULE BUILDER OPTIONS
 
-	-trim-prefix
+	-trim-prefix [prefix]
 
 		trim filename prefix.
 
-	-trim-suffix
+	-trim-suffix [suffix]
 
 		trim filename suffix (this option removes suffix even for filename
 		extensions).
@@ -85,6 +85,14 @@ OPTIONS
 		-dryrun
 
 			dry run, don't rename, just preview the result.
+
+		-changelog [changelog file]
+
+			records the rename actions in CSV format file.
+
+		-rollback [changelog file]
+
+			rollback the renames from a changelog file.
 
 	QUICK EXAMPLES
 

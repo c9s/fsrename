@@ -92,6 +92,8 @@ Please note the replacement target only works for the basename of a path.
 
 `-changelog [changelog file]` records the rename actions in CSV format file.
 
+`-rollback [changelog file]` rollback the renames from a changelog file.
+
 
 
 ## QUICK EXAMPLES
