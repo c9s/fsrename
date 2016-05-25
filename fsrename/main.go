@@ -161,35 +161,30 @@ var trimSuffixOpt = flag.String("trim-suffix", "", "trim suffix")
 var camelOpt = flag.Bool("camel", false, "Convert substrings to camel cases")
 var underscoreOpt = flag.Bool("underscore", false, "Convert substrings to underscore cases")
 
+var rollbackOpt = flag.String("rollback", "", "rollback renames from a changelog file")
+
 // runtime option
 var dryRunOpt = flag.Bool("dryrun", false, "dry run only")
+
 var orderOpt = flag.String("order", "", "order by")
 
 /*
 var seqStart = flag.Int("seqstart", 0, "sequence number start with")
 */
 func main() {
-	pwd, err := os.Getwd()
-	if err != nil {
-		fmt.Println(err)
-		os.Exit(1)
-	}
-
 	flag.Parse()
-	var pathArgs = flag.Args()
-
-	// runs without any arguments, find files under the current directory
-	if len(pathArgs) == 0 {
-		pathArgs = []string{pwd}
-	}
 
 	var chain fsrename.Worker
 
 	input := fsrename.NewFileStream()
-	scanner := fsrename.NewGlobScanner()
-	scanner.SetInput(input)
-	chain = scanner
-	go scanner.Run()
+
+	if *rollbackOpt != "" {
+		chain = fsrename.NewProxy()
+	} else {
+		chain = fsrename.NewGlobScanner()
+	}
+	chain.SetInput(input)
+	chain.Start()
 
 	// copy short option to long option
 	if *rOpt != "{nil}" {
@@ -289,6 +284,7 @@ func main() {
 
 	}
 
+	// Always run renamer at the end
 	chain = chain.Chain(fsrename.NewRenamer(*dryRunOpt))
 
 	if *changelogOpt != "" {
@@ -297,11 +293,26 @@ func main() {
 
 	chain = chain.Chain(fsrename.NewConsolePrinter())
 
-	// send paths
-	for _, path := range pathArgs {
-		input <- fsrename.MustNewFileEntry(path)
+	if *rollbackOpt != "" {
+		// send file rename entries from csv files
+		fsrename.FileStreamFromChangeLog(input, *rollbackOpt)
+	} else {
+		var pathArgs = flag.Args()
+		if len(pathArgs) == 0 {
+			// runs without any arguments, find files under the current directory
+			pwd, err := os.Getwd()
+			if err != nil {
+				fmt.Println(err)
+				os.Exit(1)
+			}
+			pathArgs = []string{pwd}
+		}
+		// send paths
+		for _, path := range pathArgs {
+			input <- fsrename.MustNewFileEntry(path)
+		}
+		input <- nil
 	}
-	input <- nil
 
 	// TODO: use condvar instead receiving the paths...
 	out := chain.Output()
