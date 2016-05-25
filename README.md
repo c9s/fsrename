@@ -174,12 +174,12 @@ entry := <-output
 
 v2.1
 
-- [ ] Add `-list` to print the filtered file paths instead of renaming the files.
-- [ ] Support more actions rather than file rename.
-  - [ ] `-backup` to backup selected files.
-- [ ] Add rename log printer to support rollback.
-- [ ] Add `-grep` to grep files that contains specific pattern.
+- [x] Add rename log printer to support rollback.
+- [x] rollback from changelog
 - [x] Ignore .git/.svn/.hg directories
+
+v2.2
+- [ ] Add `-list` to print the filtered file paths instead of renaming the files.
 - [ ] Add `-cleanup` to clean up non-ascii characters
 - [ ] Add `--real` to solve symlink reference
 
