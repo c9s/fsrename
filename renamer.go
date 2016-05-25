@@ -3,7 +3,9 @@ package fsrename
 import "os"
 
 // The rename action
-type Rename struct{}
+type Rename struct {
+	dryrun bool
+}
 
 func (r *Rename) Act(entry *FileEntry) bool {
 	if entry.newpath == "" || entry.newpath == entry.path {
@@ -18,11 +20,13 @@ func (r *Rename) Act(entry *FileEntry) bool {
 	}
 	_ = stat
 
-	os.Rename(entry.path, entry.newpath)
+	if r.dryrun == false {
+		os.Rename(entry.path, entry.newpath)
+	}
 	entry.message = "success"
 	return true
 }
 
-func NewRenamer() *Actor {
-	return NewActor(&Rename{})
+func NewRenamer(dryrun bool) *Actor {
+	return NewActor(&Rename{dryrun})
 }

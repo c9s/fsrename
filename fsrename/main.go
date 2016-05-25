@@ -289,9 +289,7 @@ func main() {
 
 	}
 
-	if *dryRunOpt == false {
-		chain = chain.Chain(fsrename.NewRenamer())
-	}
+	chain = chain.Chain(fsrename.NewRenamer(*dryRunOpt))
 
 	if *changelogOpt != "" {
 		chain = chain.Chain(fsrename.NewChangeLogWriter(*changelogOpt))
