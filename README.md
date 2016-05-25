@@ -170,15 +170,20 @@ entry := <-output
 ```
 
 
-## Roadmap
+## ChangeLog
 
 v2.1
 
-- [x] Add rename log printer to support rollback.
-- [x] rollback from changelog
-- [x] Ignore .git/.svn/.hg directories
+- Added rename log printer to support rollback.
+- Supported ignoring .git/.svn/.hg directories.
+- Renamed camelcase option names to dash-separated option names.
 
 v2.2
+- [x] Added Proxy worker.
+- [x] Added rollback support: read changelog and rollback the actions
+
+## Roadmap
+
 - [ ] Add `-list` to print the filtered file paths instead of renaming the files.
 - [ ] Add `-cleanup` to clean up non-ascii characters
 - [ ] Add `--real` to solve symlink reference
