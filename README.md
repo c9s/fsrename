@@ -149,10 +149,10 @@ import "github.com/c9s/fsrename"
 
 
 input := fsrename.NewFileStream()
-scanner := fsrename.NewGlobScanner()
-scanner.SetInput(input)
-scanner.Start()
-chain := scanner.
+pipe := fsrename.NewGlobScanner()
+pipe.SetInput(input)
+pipe.Start()
+pipe := pipe.
     Chain(fsrename.NewFileFilter()).
     Chain(fsrename.NewReverseSorter())
 
@@ -164,7 +164,7 @@ input <- nil
 
 
 // get entries from output
-output := chain.Output()
+output := pipe.Output()
 entry := <-output
 ....
 ```
