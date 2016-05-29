@@ -61,6 +61,12 @@ OPTIONS
 
 			replacement with fmt.Sprintf format for the target substring.
 
+	ADDING PREFIX & SUFFIX
+
+		-add-prefix [prefix string]
+
+		-add-suffix [suffix string]
+
 	REPLACE RULE BUILDER OPTIONS
 
 	-trim-prefix [prefix]
@@ -150,6 +156,9 @@ var dirOnlyOpt = flag.Bool("dir", false, "directory only")
 var dOpt = flag.Bool("d", false, "an alias of dir only")
 
 var changelogOpt = flag.String("changelog", "", "the changelog file")
+
+var addPrefixOpt = flag.String("add-prefix", "", "add prefix")
+var addSuffixOpt = flag.String("add-suffix", "", "add suffix")
 
 // replacement options
 var replaceOpt = flag.String("replace", "{nil}", "search")
@@ -268,6 +277,13 @@ func main() {
 		chain = chain.Chain(fsrename.NewCamelCaseReplacer())
 	} else if *underscoreOpt == true {
 		chain = chain.Chain(fsrename.NewUnderscoreReplacer())
+	}
+
+	if *addPrefixOpt != "" {
+		chain = chain.Chain(fsrename.AddPrefixAdder(*addPrefixOpt))
+	}
+	if *addSuffixOpt != "" {
+		chain = chain.Chain(fsrename.AddSuffixAdder(*addSuffixOpt))
 	}
 
 	// string replace is enabled

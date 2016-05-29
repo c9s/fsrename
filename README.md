@@ -86,7 +86,13 @@ Please note the replacement target only works for the basename of a path.
 
 `-underscore` converts camelcase filesnames into underscore separated filenames.
 
-### Common Options
+### ADDING PREFIX / SUFFIX
+
+`-add-prefix` - prepend prefix to filename of the matched entries.
+
+`-add-suffix` - add suffix to filename (before the extension name) of the matched entries.
+
+### COMMON OPTIONS
 
 `-dryrun`  dry run, don't rename, just preview the result.
 
