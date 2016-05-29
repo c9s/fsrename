@@ -86,6 +86,47 @@ func (a *CamelCaseAction) Act(entry *FileEntry) bool {
 	return true
 }
 
+// PrefixAction adds prefix to the matched filenames
+type PrefixAction struct {
+	Prefix string
+}
+
+func NewPrefixAction(prefix string) *PrefixAction {
+	return &PrefixAction{prefix}
+}
+
+func (a *PrefixAction) Act(entry *FileEntry) bool {
+	if strings.HasPrefix(entry.base, a.Prefix) {
+		return false
+	}
+	entry.newpath = path.Join(entry.dir, a.Prefix+entry.base)
+	return true
+}
+
+// SuffixAction adds prefix to the matched filenames
+type SuffixAction struct {
+	Suffix string
+}
+
+func NewSuffixAction(suffix string) *SuffixAction {
+	return &SuffixAction{suffix}
+}
+
+func (a *SuffixAction) Act(entry *FileEntry) bool {
+	strs := strings.Split(entry.base, ".")
+	if len(strs) == 1 {
+		entry.newpath = path.Join(entry.dir, strs[0]+a.Suffix)
+	} else {
+		fn := strings.Join(strs[:len(strs)-1], ".")
+		if strings.HasSuffix(fn, a.Suffix) {
+			return false
+		}
+		ext := strs[len(strs)-1]
+		entry.newpath = path.Join(entry.dir, fn+a.Suffix+"."+ext)
+	}
+	return true
+}
+
 type RegExpReplaceAction struct {
 	Matcher *regexp.Regexp
 	Replace string

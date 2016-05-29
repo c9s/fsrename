@@ -18,6 +18,14 @@ func NewUnderscoreReplacer() *Actor {
 	return NewActor(NewUnderscoreAction())
 }
 
+func NewPrefixAdder(prefix string) *Actor {
+	return NewActor(NewPrefixAction(prefix))
+}
+
+func NewSuffixAdder(suffix string) *Actor {
+	return NewActor(NewSuffixAction(suffix))
+}
+
 func NewRegExpReplacer(pattern, replace string) *Actor {
 	matcher := regexp.MustCompile(pattern)
 	return NewActor(NewRegExpReplaceAction(matcher, replace))
