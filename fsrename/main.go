@@ -280,10 +280,10 @@ func main() {
 	}
 
 	if *addPrefixOpt != "" {
-		chain = chain.Chain(fsrename.AddPrefixAdder(*addPrefixOpt))
+		chain = chain.Chain(fsrename.NewPrefixAdder(*addPrefixOpt))
 	}
 	if *addSuffixOpt != "" {
-		chain = chain.Chain(fsrename.AddSuffixAdder(*addSuffixOpt))
+		chain = chain.Chain(fsrename.NewSuffixAdder(*addSuffixOpt))
 	}
 
 	// string replace is enabled
