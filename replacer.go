@@ -26,6 +26,10 @@ func NewSuffixAdder(suffix string) *Actor {
 	return NewActor(NewSuffixAction(suffix))
 }
 
+func NewExtReplacer(ext string) *Actor {
+	return NewActor(NewExtReplaceAction(ext))
+}
+
 func NewRegExpReplacer(pattern, replace string) *Actor {
 	matcher := regexp.MustCompile(pattern)
 	return NewActor(NewRegExpReplaceAction(matcher, replace))

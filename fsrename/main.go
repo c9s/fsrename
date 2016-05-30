@@ -167,6 +167,8 @@ var replaceRegexpOpt = flag.String("replace-regexp", "{nil}", "regular expressio
 var replaceReOpt = flag.String("replace-re", "{nil}", "regular expression replace target")
 var rrOpt = flag.String("rr", "{nil}", "regular expression replace target")
 
+var replaceExtOpt = flag.String("replace-ext", "", "replace file extension")
+
 var withOpt = flag.String("with", "{nil}", "replacement")
 var wOpt = flag.String("w", "{nil}", "replacement")
 var withFormatOpt = flag.String("with-format", "{nil}", "replacement format")
@@ -306,6 +308,10 @@ func main() {
 			}
 		}
 
+	}
+
+	if *replaceExtOpt != "" {
+		chain = chain.Chain(fsrename.NewExtReplacer(*replaceExtOpt))
 	}
 
 	// Always run renamer at the end
