@@ -18,6 +18,7 @@ SYNOPSIS
 --------------
 
     fsrename -file -match "[a-z]+" -rr "foo_+" -with bar test
+    fsrename -ext cpp -replace-ext cc src
 
 INSTALL
 --------------
