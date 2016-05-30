@@ -64,19 +64,19 @@ You can create a link to the package under your GOPATH to create an doc alias
 Please note the replacement target only works for the basename of a path.
 `-replace*` and `-with*` should be combined together to replace the substrings.
 
-#### Specifying replace target
+#### SPECIFYING REPLACE TARGET
 
 `-r [search string]`, `-replace [search string]` specify target substring with normal string matching.
 
 `-rr [regexp pattern]`, `-replace-re [regexp pattern]`, `-replace-regexp [regexp pattern]` specify target substring with regular expression matching.
 
-#### Specifying replacement
+#### SPECIFYING REPLACEMENT
 
 `-w [string]`, `-with [string]` replacement for the target substring.
 
 `-wf [format string]`, `-with-format [format string]` replacement with fmt.Sprintf format for the target substring.
 
-### REPLACE RULE BUILDER OPTIONS
+### REPLACING RULE BUILDER OPTIONS
 
 `-trim-prefix [prefix]` trim filename prefix.
 
@@ -88,9 +88,14 @@ Please note the replacement target only works for the basename of a path.
 
 ### ADDING PREFIX / SUFFIX
 
-`-add-prefix` - prepend prefix to filename of the matched entries.
+`-add-prefix [prefix]` - prepend prefix to filename of the matched entries.
 
-`-add-suffix` - add suffix to filename (before the extension name) of the matched entries.
+`-add-suffix [suffix]` - add suffix to filename (before the extension name) of the matched entries.
+
+### REPLACING EXTENSION
+
+`-replace-ext [ext]` replace the extension fomr the matched entries. usually this
+option is combined with `-ext [ext]` to replace extension names.
 
 ### COMMON OPTIONS
 
@@ -142,6 +147,9 @@ Use regular expression without escaping:
 
     fsrename -replace "_xxx" -with "_aaa" -dryrun  src/c6
 
+Replace `.cpp` to `.cc` from the files under `src/` directory:
+
+    fsrename -ext cpp -replace-ext cc src
 
 ## API
 
