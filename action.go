@@ -138,13 +138,13 @@ func NewExtReplaceAction(ext string) *ExtReplaceAction {
 func (a *ExtReplaceAction) Act(entry *FileEntry) bool {
 	strs := strings.Split(entry.base, ".")
 	if len(strs) == 1 {
-		entry.newpath = path.Join(entry.dir, strs[0]+a.Ext)
+		entry.newpath = path.Join(entry.dir, strs[0]+"."+a.Ext)
 	} else {
 		fn := strings.Join(strs[:len(strs)-1], ".")
 		if strings.HasSuffix(fn, "."+a.Ext) {
 			return false
 		}
-		entry.newpath = path.Join(entry.dir, fn+a.Ext)
+		entry.newpath = path.Join(entry.dir, fn+"."+a.Ext)
 	}
 	return true
 }

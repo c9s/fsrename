@@ -13,12 +13,21 @@ func TestUnderscoreAction(t *testing.T) {
 }
 
 func TestExtReplaceAction(t *testing.T) {
-	act := NewExtReplaceAction(".twig")
+	act := NewExtReplaceAction("twig")
 	assert.NotNil(t, act)
 	entry, err := NewFileEntry("tests/file.html")
 	assert.Nil(t, err)
 	assert.True(t, act.Act(entry))
 	assert.Equal(t, "tests/file.twig", entry.newpath)
+}
+
+func TestExtReplaceAction2(t *testing.T) {
+	act := NewExtReplaceAction("twig")
+	assert.NotNil(t, act)
+	entry, err := NewFileEntry("tests/file.html.twig")
+	assert.Nil(t, err)
+	assert.True(t, act.Act(entry))
+	assert.Equal(t, "tests/file.html.twig", entry.newpath)
 }
 
 func TestCamelCaseAction(t *testing.T) {
