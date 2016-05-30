@@ -12,6 +12,15 @@ func TestUnderscoreAction(t *testing.T) {
 	assert.Equal(t, "tests/camel_case.php", entry.newpath)
 }
 
+func TestExtReplaceAction(t *testing.T) {
+	act := NewExtReplaceAction(".twig")
+	assert.NotNil(t, act)
+	entry, err := NewFileEntry("tests/file.html")
+	assert.Nil(t, err)
+	assert.True(t, act.Act(entry))
+	assert.Equal(t, "tests/file.twig", entry.newpath)
+}
+
 func TestCamelCaseAction(t *testing.T) {
 	act := NewCamelCaseAction("[-_]+")
 	assert.NotNil(t, act)

@@ -127,6 +127,28 @@ func (a *SuffixAction) Act(entry *FileEntry) bool {
 	return true
 }
 
+type ExtReplaceAction struct {
+	Ext string
+}
+
+func NewExtReplaceAction(ext string) *ExtReplaceAction {
+	return &ExtReplaceAction{ext}
+}
+
+func (a *ExtReplaceAction) Act(entry *FileEntry) bool {
+	strs := strings.Split(entry.base, ".")
+	if len(strs) == 1 {
+		entry.newpath = path.Join(entry.dir, strs[0]+a.Ext)
+	} else {
+		fn := strings.Join(strs[:len(strs)-1], ".")
+		if strings.HasSuffix(fn, "."+a.Ext) {
+			return false
+		}
+		entry.newpath = path.Join(entry.dir, fn+a.Ext)
+	}
+	return true
+}
+
 type RegExpReplaceAction struct {
 	Matcher *regexp.Regexp
 	Replace string
