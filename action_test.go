@@ -36,7 +36,7 @@ func TestCamelCaseAction(t *testing.T) {
 	entry, err := NewFileEntry("tests/foo-bar.php")
 	assert.Nil(t, err)
 	act.Act(entry)
-	assert.Equal(t, "tests/FooBar.php", entry.newpath)
+	assert.Equal(t, "tests/fooBar.php", entry.newpath)
 }
 
 func TestRegExpAction(t *testing.T) {
