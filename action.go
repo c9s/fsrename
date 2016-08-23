@@ -80,7 +80,11 @@ func NewCamelCaseAction(splitstr string) *CamelCaseAction {
 func (a *CamelCaseAction) Act(entry *FileEntry) bool {
 	substrings := a.spliter.Split(entry.base, -1)
 	for i, str := range substrings {
-		substrings[i] = strings.ToUpper(str[:1]) + str[1:]
+		if i == 0 {
+			substrings[i] = strings.ToLower(str)
+		} else {
+			substrings[i] = strings.ToUpper(str[:1]) + str[1:]
+		}
 	}
 	entry.newpath = path.Join(entry.dir, strings.Join(substrings, ""))
 	return true
